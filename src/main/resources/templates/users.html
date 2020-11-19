@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h2 th:if="${users.empty}">No users yet!</h2>
+        <div th:if="${!users.empty}">
+            <h2>Users</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.surname}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td><a th:href="@{/users/delete/{id}(id=${user.id})}">Delete</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-primary btn-lg active" href="/users/register">Add a new user</a>
+    </div>
+</html>
