@@ -2,15 +2,16 @@ package com.tutoring.portal.controller;
 
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 @Controller
 public class UserController {
@@ -18,51 +19,64 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    private static final String USERS = "users";
-
-    @GetMapping(value = "/users")
-    public String getAllUsers(Model model) {
-        logger.info("Searching for all users in the database");
-
-        model.addAttribute(USERS, userService.getAllUsers());
-        return USERS;
+    @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
+    public ModelAndView login(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
     }
 
-    @GetMapping(value = "/users/{id}")
-    public User getUser(@PathVariable Long id) {
-        String message = "Searching for user wth ID: " + id;
-        logger.info(message);
-        return userService.getUserById(id);
+
+    @RequestMapping(value="/registration", method = RequestMethod.GET)
+    public ModelAndView registration(){
+        ModelAndView modelAndView = new ModelAndView();
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("registration");
+        return modelAndView;
     }
 
-    @GetMapping(value = "/users/register")
-    public String registerUser(User user) {
-        return "register-user";
-    }
-
-    @PostMapping(value = "/users/register")
-    public String saveUser(User user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            logger.error("Cannot save user, wrong input");
-            return "register-user";
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (userExists != null) {
+            bindingResult
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the email provided");
         }
-        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword());
-        userService.saveUser(newUser);
-        logger.info("User successfully saved");
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("registration");
+        } else {
+            userService.saveUser(user);
+            modelAndView.addObject("successMessage", "User has been registered successfully");
+            modelAndView.addObject("user", new User());
+            modelAndView.setViewName("registration");
 
-        model.addAttribute(USERS, userService.getAllUsers());
-        return USERS;
+        }
+        return modelAndView;
     }
 
-    @GetMapping(value = "users/delete/{id}")
-    public String deleteUser(@PathVariable Long id, Model model) {
-        userService.deleteUser(id);
-        String message = "Successfully deleted user with ID: " + id;
-        logger.info(message);
-
-        model.addAttribute(USERS, userService.getAllUsers());
-        return USERS;
+    @RequestMapping(value="/admin/adminHome", method = RequestMethod.GET)
+    public ModelAndView home(){
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getSurname() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("adminMessage","This Page is available to Users with Admin Role");
+        modelAndView.setViewName("admin/adminHome");
+        return modelAndView;
     }
+
+    @RequestMapping(value="/user/userHome", method = RequestMethod.GET)
+    public ModelAndView user(){
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getSurname() + " (" + user.getEmail() + ")");
+        modelAndView.addObject("userMessage","This Page is available to Users with User Role");
+        modelAndView.setViewName("user/userHome");
+        return modelAndView;
+    }
+
 }

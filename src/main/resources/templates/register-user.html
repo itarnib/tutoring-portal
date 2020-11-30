@@ -3,7 +3,7 @@
     <div th:replace="fragments/header :: header"></div>
 
     <div class="container">
-        <form action="#" th:action="@{/users/register}" th:object="${user}" method="post">
+        <form action="#" th:action="@{/admin/users/register}" th:object="${user}" method="post">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" th:field="*{name}" id="name" placeholder="Name">

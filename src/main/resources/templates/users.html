@@ -19,11 +19,11 @@
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.surname}"></td>
                     <td th:text="${user.email}"></td>
-                    <td><a th:href="@{/users/delete/{id}(id=${user.id})}">Delete</a></td>
+                    <td><a th:href="@{/admin/users/delete/{id}(id=${user.id})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/users/register">Add a new user</a>
+        <a class="btn btn-primary btn-lg active" href="/admin/users/register">Add a new user</a>
     </div>
 </html>
