@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -53,7 +54,28 @@ public class UserService {
     }
 
     public int deleteUser(int id) {
+        User user = getUserById(id);
+        Set<Role> userRoles = user.getRoles();
+        userRoles.clear();
+        user.setRoles(userRoles);
+        userRepository.save(user);
         userRepository.deleteById(id);
         return id;
+    }
+
+    public User addAdminRole(User user) {
+        Role adminRole = roleRepository.findByRole("ADMIN");
+        Set<Role> userRoles = user.getRoles();
+        userRoles.add(adminRole);
+        user.setRoles(userRoles);
+        return userRepository.save(user);
+    }
+
+    public User removeAdminRole(User user) {
+        Role adminRole = roleRepository.findByRole("ADMIN");
+        Set<Role> userRoles = user.getRoles();
+        userRoles.remove(adminRole);
+        user.setRoles(userRoles);
+        return userRepository.save(user);
     }
 }

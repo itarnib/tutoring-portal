@@ -23,19 +23,12 @@ public class Role {
     @Column(name = "ROLE")
     private String role;
 
-    @ManyToMany
-    @JoinTable(name = "USER_ROLE",
-            joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"))
-    private Set<User> users;
-
     public Role() {
     }
 
     public Role(int id, String role, Set<User> users) {
         this.id = id;
         this.role = role;
-        this.users = users;
     }
 
     public int getId() {
@@ -52,13 +45,5 @@ public class Role {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }

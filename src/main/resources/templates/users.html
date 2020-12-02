@@ -11,6 +11,7 @@
                     <th>Name</th>
                     <th>Surname</th>
                     <th>Email</th>
+                    <th>Admin Role</th>
                     <th>Delete</th>
                 </tr>
                 </thead>
@@ -19,6 +20,8 @@
                     <td th:text="${user.name}"></td>
                     <td th:text="${user.surname}"></td>
                     <td th:text="${user.email}"></td>
+                    <td th:if="${!user.isAdmin()}"><a th:href="@{/admin/users/adminrole/add/{id}(id=${user.id})}">Add Admin role</a></td>
+                    <td th:if="${user.isAdmin()}"><a th:href="@{/admin/users/adminrole/remove/{id}(id=${user.id})}">Remove Admin role</a></td>
                     <td><a th:href="@{/admin/users/delete/{id}(id=${user.id})}">Delete</a></td>
                 </tr>
                 </tbody>

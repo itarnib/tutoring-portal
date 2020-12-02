@@ -65,4 +65,26 @@ public class AdminController {
         model.addAttribute(USERS, userService.getAllUsers());
         return USERS;
     }
+
+    @GetMapping(value = "admin/users/adminrole/add/{id}")
+    public String addAdminRole(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.addAdminRole(user);
+        String message = "Successfully added admin role to user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
+    @GetMapping(value = "admin/users/adminrole/remove/{id}")
+    public String removeAdminRole(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.removeAdminRole(user);
+        String message = "Successfully removed admin role from user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
 }
