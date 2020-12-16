@@ -1,6 +1,8 @@
 package com.tutoring.portal.controller;
 
+import com.tutoring.portal.model.Subject;
 import com.tutoring.portal.model.User;
+import com.tutoring.portal.service.SubjectService;
 import com.tutoring.portal.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SubjectService subjectService;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -48,7 +53,7 @@ public class AdminController {
             logger.error("Cannot save user, wrong input");
             return "register-user";
         }
-        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getActive(), user.getRoles());
+        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getActive(), user.getRoles(), user.getSubjects());
         userService.saveUser(newUser);
         logger.info("User successfully saved");
 
@@ -86,5 +91,41 @@ public class AdminController {
 
         model.addAttribute(USERS, userService.getAllUsers());
         return USERS;
+    }
+
+    @GetMapping(value = "admin/subjects")
+    public String getAllSubjects(Model model) {
+        logger.info("Searching for all subjects in the database");
+        model.addAttribute("subjects", subjectService.getAllSubjects());
+        return "subjects";
+    }
+
+    @GetMapping(value = "admin/subjects/add")
+    public String addSubject(Subject subject) {
+        return "add-subject";
+    }
+
+    @PostMapping(value = "admin/subjects/add")
+    public String saveSubject(Subject subject, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            logger.error("Cannot save subject, wrong input");
+            return "add-subject";
+        }
+        Subject newSubject = new Subject(subject.getId(), subject.getSubjectName());
+        subjectService.saveSubject(newSubject);
+        logger.info("Subject successfully saved");
+
+        model.addAttribute("subjects", subjectService.getAllSubjects());
+        return "subjects";
+    }
+
+    @GetMapping(value = "admin/subjects/delete/{id}")
+    public String deleteSubject(@PathVariable int id, Model model) {
+        subjectService.deleteSubject(id);
+        String message = "Successfully deleted subjects with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute("subjects", subjectService.getAllSubjects());
+        return "subjects";
     }
 }

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="container">
+        <form action="#" th:action="@{/admin/subjects/add}" th:object="${subject}" method="post">
+            <div class="form-group">
+                <label for="subjectName">Subject Name</label>
+                <input type="text" th:field="*{subjectName}" id="subjectName" placeholder="Subject Name">
+            </div>
+            <input type="submit" class="btn btn-primary" value="Add">
+        </form>
+    </div>
+</html>

@@ -52,10 +52,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID"))
     private Set<Role> roles;
 
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(name = "USER_SUBJECT",
+            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "SUBJECT_ID"))
+    private Set<Subject> subjects;
+
     public User() {
     }
 
-    public User(int id, String name, String surname, String email, String password, int active, Set<Role> roles) {
+    public User(int id, String name, String surname, String email, String password, int active,
+                Set<Role> roles, Set<Subject> subjects) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -63,6 +70,7 @@ public class User {
         this.password = password;
         this.active = active;
         this.roles = roles;
+        this.subjects = subjects;
     }
 
     public boolean isAdmin() {
@@ -128,5 +136,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
     }
 }
