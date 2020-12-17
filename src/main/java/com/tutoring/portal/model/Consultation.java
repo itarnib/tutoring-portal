@@ -23,7 +23,7 @@ public class Consultation {
 
     @Column(name="DESCRIPTION")
     @NotEmpty(message = "Please provide a description")
-    @Length(min = 6, message = "Password must have at least 6 characters")
+    @Length(min = 20, message = "Description must have at least 20 characters")
     private String description;
 
     @ManyToOne

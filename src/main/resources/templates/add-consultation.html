@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="container">
+        <form action="#" th:action="@{/consultations/add}" th:object="${consultation}" method="post">
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <select th:field="*{subject}" id="subject">
+                    <option value="">Select Subject</option>
+                    <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.subjectName}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" th:field="*{description}" id="description" placeholder="description">
+            </div>
+            <input type="hidden" th:field="*{user}" id="user" th:value="${consultation.user.id}">
+            <input type="submit" class="btn btn-primary" value="Add">
+        </form>
+    </div>
+</html>
