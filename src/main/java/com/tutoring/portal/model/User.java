@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -58,11 +59,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "SUBJECT_ID"))
     private Set<Subject> subjects;
 
+    @OneToMany(mappedBy="user")
+    private Set<Consultation> consultations;
+
     public User() {
     }
 
     public User(int id, String name, String surname, String email, String password, int active,
-                Set<Role> roles, Set<Subject> subjects) {
+                Set<Role> roles, Set<Subject> subjects, Set<Consultation> consultations) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -71,6 +75,7 @@ public class User {
         this.active = active;
         this.roles = roles;
         this.subjects = subjects;
+        this.consultations = consultations;
     }
 
     public boolean isAdmin() {
@@ -144,5 +149,13 @@ public class User {
 
     public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
+    }
+
+    public Set<Consultation> getConsultations() {
+        return consultations;
+    }
+
+    public void setConsultations(Set<Consultation> consultations) {
+        this.consultations = consultations;
     }
 }
