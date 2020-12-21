@@ -32,16 +32,16 @@ public class Consultation {
 
     @ManyToOne
     @JoinColumn(name="USER_ID", nullable=false)
-    private User user;
+    private User teacher;
 
     public Consultation() {
     }
 
-    public Consultation(int id, String description, Subject subject, User user) {
+    public Consultation(int id, String description, Subject subject, User teacher) {
         this.id = id;
         this.description = description;
         this.subject = subject;
-        this.user = user;
+        this.teacher = teacher;
     }
 
     public int getId() {
@@ -68,11 +68,11 @@ public class Consultation {
         this.subject = subject;
     }
 
-    public User getUser() {
-        return user;
+    public User getTeacher() {
+        return teacher;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTeacher(User teacher) {
+        this.teacher = teacher;
     }
 }

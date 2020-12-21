@@ -17,7 +17,7 @@
                 <tr th:each="consultation : ${consultations}">
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
-                    <td th:text="${consultation.user.name}"></td>
+                    <td th:text="${consultation.teacher.name}"></td>
                 </tr>
                 </tbody>
             </table>

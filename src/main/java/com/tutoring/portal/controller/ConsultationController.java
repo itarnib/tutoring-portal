@@ -38,6 +38,14 @@ public class ConsultationController {
         return "consultations";
     }
 
+    @GetMapping(value = "consultations/my-consultations")
+    public String getUserConsultations(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        model.addAttribute("consultations", user.getConsultations());
+        return "consultations";
+    }
+
     @GetMapping(value = "consultations/{id}")
     public Consultation getConsultation(@PathVariable int id) {
         String message = "Searching for consultation wth ID: " + id;
@@ -49,7 +57,7 @@ public class ConsultationController {
     public String addConsultation(Consultation consultation, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        consultation.setUser(user);
+        consultation.setTeacher(user);
 
         model.addAttribute("consultation", consultation);
         model.addAttribute("subjects", subjectService.getAllSubjects());
@@ -64,7 +72,7 @@ public class ConsultationController {
         }
         Consultation newConsultation = new Consultation();
         newConsultation.setId(consultation.getId());
-        newConsultation.setUser(consultation.getUser());
+        newConsultation.setTeacher(consultation.getTeacher());
         newConsultation.setSubject(consultation.getSubject());
         newConsultation.setDescription(consultation.getDescription());
         consultationService.saveConsultation(newConsultation);

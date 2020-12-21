@@ -59,7 +59,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "SUBJECT_ID"))
     private Set<Subject> subjects;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="teacher")
     private Set<Consultation> consultations;
 
     public User() {

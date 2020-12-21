@@ -15,7 +15,7 @@
                 <label for="description">Description</label>
                 <input type="text" th:field="*{description}" id="description" placeholder="description">
             </div>
-            <input type="hidden" th:field="*{user}" id="user" th:value="${consultation.user.id}">
+            <input type="hidden" th:field="*{teacher}" id="teacher" th:value="${consultation.teacher.id}">
             <input type="submit" class="btn btn-primary" value="Add">
         </form>
     </div>
