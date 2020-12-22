@@ -1,11 +1,14 @@
 package com.tutoring.portal.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "ROLE")
@@ -17,6 +20,7 @@ public class Role {
     private int id;
 
     @Column(name = "ROLE")
+    @NotEmpty
     private String role;
 
     public Role() {

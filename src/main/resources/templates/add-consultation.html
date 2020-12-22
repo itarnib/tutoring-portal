@@ -14,6 +14,7 @@
             <div class="form-group">
                 <label for="description">Description</label>
                 <input type="text" th:field="*{description}" id="description" placeholder="description">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
             <input type="hidden" th:field="*{teacher}" id="teacher" th:value="${consultation.teacher.id}">
             <input type="submit" class="btn btn-primary" value="Add">
