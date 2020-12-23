@@ -78,4 +78,14 @@ public class UserService {
         user.setRoles(userRoles);
         return userRepository.save(user);
     }
+
+    public User blockUser(User user) {
+        user.setActive(0);
+        return userRepository.save(user);
+    }
+
+    public User unblockUser(User user) {
+        user.setActive(1);
+        return userRepository.save(user);
+    }
 }

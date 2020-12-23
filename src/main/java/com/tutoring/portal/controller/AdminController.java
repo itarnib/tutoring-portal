@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
+
 @Controller
 public class AdminController {
 
@@ -48,12 +50,12 @@ public class AdminController {
     }
 
     @PostMapping(value = "admin/users/register")
-    public String saveUser(User user, BindingResult result, Model model) {
+    public String saveUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
             logger.error("Cannot save user, wrong input");
             return "register-user";
         }
-        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getActive(), user.getRoles(), user.getSubjects());
+        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getActive(), user.getRoles(), user.getSubjects(), user.getConsultations());
         userService.saveUser(newUser);
         logger.info("User successfully saved");
 
@@ -93,6 +95,28 @@ public class AdminController {
         return USERS;
     }
 
+    @GetMapping(value = "admin/users/block/{id}")
+    public String blockUser(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.blockUser(user);
+        String message = "Successfully blocked user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
+    @GetMapping(value = "admin/users/unblock/{id}")
+    public String unblockUser(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.unblockUser(user);
+        String message = "Successfully unblocked user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
     @GetMapping(value = "admin/subjects")
     public String getAllSubjects(Model model) {
         logger.info("Searching for all subjects in the database");
@@ -106,12 +130,12 @@ public class AdminController {
     }
 
     @PostMapping(value = "admin/subjects/add")
-    public String saveSubject(Subject subject, BindingResult result, Model model) {
+    public String saveSubject(@Valid Subject subject, BindingResult result, Model model) {
         if (result.hasErrors()) {
             logger.error("Cannot save subject, wrong input");
             return "add-subject";
         }
-        Subject newSubject = new Subject(subject.getId(), subject.getSubjectName());
+        Subject newSubject = new Subject(subject.getId(), subject.getSubjectName(), subject.getConsultations());
         subjectService.saveSubject(newSubject);
         logger.info("Subject successfully saved");
 
