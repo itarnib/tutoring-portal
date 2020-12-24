@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="container">
+        <form action="#" th:action="@{/admin/users/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" th:field="*{name}" id="name" value="${user.name}">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <div class="form-group">
+                <label for="name">Surname</label>
+                <input type="text" th:field="*{surname}" id="surname" value="${user.surname}">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" th:field="*{email}" id="email" value="${user.email}">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+            <input type="hidden" th:field="*{password}" id="password" th:value="${user.password}">
+            <input type="hidden" th:field="*{roles}" id="roles" th:value="${user.roles}">
+            <input type="hidden" th:field="*{active}" id="active" th:value="${user.active}">
+            <input type="hidden" th:field="*{consultations}" id="consultations" th:value="${user.consultations}">
+            <input type="hidden" th:field="*{id}" id="id" th:value="${user.id}">
+            <input type="submit" class="btn btn-primary" value="Update">
+        </form>
+    </div>
+</html>

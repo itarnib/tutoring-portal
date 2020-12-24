@@ -53,6 +53,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
     public int deleteUser(int id) {
         User user = getUserById(id);
         Set<Role> userRoles = user.getRoles();

@@ -63,6 +63,26 @@ public class AdminController {
         return USERS;
     }
 
+    @GetMapping(value = "admin/users/update/{id}")
+    public String updateUser(@PathVariable int id, User user,  Model model) {
+        user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "update-user";
+    }
+
+    @PostMapping(value = "admin/users/update/{id}")
+    public String saveUpdatedUser(@Valid User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            logger.error("Cannot update user, wrong input");
+            return "update-user";
+        }
+        userService.updateUser(user);
+        logger.info("User successfully updated");
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
     @GetMapping(value = "admin/users/delete/{id}")
     public String deleteUser(@PathVariable int id, Model model) {
         userService.deleteUser(id);
