@@ -4,17 +4,19 @@
     <div class="container">
         <h2 th:if="${subjects.empty}">No subjects yet!</h2>
         <div th:if="${!subjects.empty}">
-            <h2>Users</h2>
+            <h2>Subject</h2>
             <table class="table">
                 <thead>
                 <tr>
                     <th>Subject</th>
+                    <th>Edit</th>
                     <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="subject : ${subjects}">
                     <td th:text="${subject.subjectName}"></td>
+                    <td><a th:href="@{/admin/subjects/update/{id}(id=${subject.id})}">Edit</a></td>
                     <td><a th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}">Delete</a></td>
                 </tr>
                 </tbody>

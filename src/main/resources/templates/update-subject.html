@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="container">
+        <form action="#" th:action="@{/admin/subjects/update/{id}(id=${subject.id})}" th:object="${subject}" method="post">
+            <div class="form-group">
+                <label for="subjectName">Subject Name</label>
+                <input type="text" th:field="*{subjectName}" id="subjectName" value="${subject.subjectName}">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('subjectName')}" th:errors="*{subjectName}"></div>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Update">
+        </form>
+    </div>
+</html>

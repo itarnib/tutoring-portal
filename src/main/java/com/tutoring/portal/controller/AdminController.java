@@ -64,19 +64,29 @@ public class AdminController {
     }
 
     @GetMapping(value = "admin/users/update/{id}")
-    public String updateUser(@PathVariable int id, User user,  Model model) {
-        user = userService.getUserById(id);
+    public String updateUser(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "update-user";
     }
 
     @PostMapping(value = "admin/users/update/{id}")
-    public String saveUpdatedUser(@Valid User user, BindingResult result, Model model) {
+    public String saveUpdatedUser(@PathVariable int id, @Valid User user, BindingResult result, Model model) {
+        User existingUser = userService.findUserByEmail(user.getEmail());
+        if (existingUser != null && existingUser.getId() != id) {
+            result
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the email provided");
+        }
         if (result.hasErrors()) {
             logger.error("Cannot update user, wrong input");
             return "update-user";
         }
-        userService.updateUser(user);
+        User updatedUser = userService.getUserById(id);
+        updatedUser.setName(user.getName());
+        updatedUser.setSurname(user.getSurname());
+        updatedUser.setEmail(user.getEmail());
+        userService.updateUser(updatedUser);
         logger.info("User successfully updated");
 
         model.addAttribute(USERS, userService.getAllUsers());
@@ -158,6 +168,28 @@ public class AdminController {
         Subject newSubject = new Subject(subject.getId(), subject.getSubjectName(), subject.getConsultations());
         subjectService.saveSubject(newSubject);
         logger.info("Subject successfully saved");
+
+        model.addAttribute("subjects", subjectService.getAllSubjects());
+        return "subjects";
+    }
+
+    @GetMapping(value = "admin/subjects/update/{id}")
+    public String updateSubject(@PathVariable int id, Model model) {
+        Subject subject = subjectService.getSubjectById(id);
+        model.addAttribute("subject", subject);
+        return "update-subject";
+    }
+
+    @PostMapping(value = "admin/subjects/update/{id}")
+    public String saveUpdatedSubject(@PathVariable int id, @Valid Subject subject, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            logger.error("Cannot update subject, wrong input");
+            return "update-subject";
+        }
+        Subject updatedSubject = subjectService.getSubjectById(id);
+        updatedSubject.setSubjectName(subject.getSubjectName());
+        subjectService.saveSubject(updatedSubject);
+        logger.info("Subject successfully updated");
 
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "subjects";
