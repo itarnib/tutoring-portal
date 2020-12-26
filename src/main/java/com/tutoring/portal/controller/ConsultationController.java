@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
+
 @Controller
 public class ConsultationController {
 
@@ -65,17 +67,12 @@ public class ConsultationController {
     }
 
     @PostMapping(value = "consultations/add")
-    public String saveConsultation(Consultation consultation, BindingResult result, Model model) {
+    public String saveConsultation(@Valid Consultation consultation, BindingResult result, Model model) {
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
             return "add-consultation";
         }
-        Consultation newConsultation = new Consultation();
-        newConsultation.setId(consultation.getId());
-        newConsultation.setTeacher(consultation.getTeacher());
-        newConsultation.setSubject(consultation.getSubject());
-        newConsultation.setDescription(consultation.getDescription());
-        consultationService.saveConsultation(newConsultation);
+        consultationService.saveConsultation(consultation);
         logger.info("Consultation successfully saved");
 
         model.addAttribute("consultations", consultationService.getAllConsultations());

@@ -51,12 +51,17 @@ public class AdminController {
 
     @PostMapping(value = "admin/users/register")
     public String saveUser(@Valid User user, BindingResult result, Model model) {
+        User existingUser = userService.findUserByEmail(user.getEmail());
+        if (existingUser != null) {
+            result
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the email provided");
+        }
         if (result.hasErrors()) {
             logger.error("Cannot save user, wrong input");
             return "register-user";
         }
-        User newUser = new User(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getActive(), user.getRoles(), user.getSubjects(), user.getConsultations());
-        userService.saveUser(newUser);
+        userService.saveUser(user);
         logger.info("User successfully saved");
 
         model.addAttribute(USERS, userService.getAllUsers());
@@ -165,8 +170,7 @@ public class AdminController {
             logger.error("Cannot save subject, wrong input");
             return "add-subject";
         }
-        Subject newSubject = new Subject(subject.getId(), subject.getSubjectName(), subject.getConsultations());
-        subjectService.saveSubject(newSubject);
+        subjectService.saveSubject(subject);
         logger.info("Subject successfully saved");
 
         model.addAttribute("subjects", subjectService.getAllSubjects());
