@@ -8,9 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import java.util.Set;
 
 @Entity
 @Table(name = "CONSULTATION")
@@ -34,14 +37,21 @@ public class Consultation {
     @JoinColumn(name="USER_ID", nullable=false)
     private User teacher;
 
+    @ManyToMany
+    @JoinTable(name = "USER_CONSULTATION",
+            joinColumns = @JoinColumn(name = "CONSULTATION_ID", referencedColumnName = "CONSULTATION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"))
+    private Set<User> students;
+
     public Consultation() {
     }
 
-    public Consultation(int id, String description, Subject subject, User teacher) {
+    public Consultation(int id, String description, Subject subject, User teacher, Set<User> students) {
         this.id = id;
         this.description = description;
         this.subject = subject;
         this.teacher = teacher;
+        this.students = students;
     }
 
     public int getId() {
@@ -74,5 +84,13 @@ public class Consultation {
 
     public void setTeacher(User teacher) {
         this.teacher = teacher;
+    }
+
+    public Set<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<User> students) {
+        this.students = students;
     }
 }

@@ -42,10 +42,10 @@ public class ConsultationController {
 
     @GetMapping(value = "consultations/my-consultations")
     public String getUserConsultations(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        model.addAttribute("consultations", user.getConsultations());
-        return "consultations";
+        User user = getCurrentUser();
+        model.addAttribute("createdConsultations", user.getCreatedConsultations());
+        model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
+        return "my-consultations";
     }
 
     @GetMapping(value = "consultations/{id}")
@@ -57,8 +57,7 @@ public class ConsultationController {
 
     @GetMapping(value = "consultations/add")
     public String addConsultation(Consultation consultation, Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
+        User user = getCurrentUser();
         consultation.setTeacher(user);
 
         model.addAttribute("consultation", consultation);
@@ -68,8 +67,14 @@ public class ConsultationController {
 
     @PostMapping(value = "consultations/add")
     public String saveConsultation(@Valid Consultation consultation, BindingResult result, Model model) {
+        if (consultation.getSubject() == null) {
+            result
+                    .rejectValue("subject", "error.consultation",
+                            "Please select a subject from the list");
+        }
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
+            model.addAttribute("subjects", subjectService.getAllSubjects());
             return "add-consultation";
         }
         consultationService.saveConsultation(consultation);
@@ -87,5 +92,55 @@ public class ConsultationController {
 
         model.addAttribute("consultations", consultationService.getAllConsultations());
         return "consultations";
+    }
+
+    @GetMapping(value = "consultations/register/{id}")
+    public String registerUserToConsultation(@PathVariable int id, Model model) {
+        User user = getCurrentUser();
+        Consultation consultation = consultationService.getConsultationById(id);
+
+        if (consultation == null) {
+            model.addAttribute("warningMessage", "Consultation with ID " + id + " does not exist");
+        } else if (consultation.getTeacher().getId() == user.getId()) {
+            model.addAttribute("warningMessage", "You cannot register to your own consultation");
+        } else if (consultation.getStudents().contains(user)) {
+            model.addAttribute("warningMessage", "You are already registered to this consultation");
+        } else {
+            consultation.getStudents().add(user);
+            consultationService.saveConsultation(consultation);
+            String message = "Successfully registered user with ID" + user.getId() + "to consultation with ID: " + id;
+            logger.info(message);
+            model.addAttribute("successMessage", "You have successfully registered to consultation");
+        }
+
+        model.addAttribute("consultations", consultationService.getAllConsultations());
+        return "consultations";
+    }
+
+    @GetMapping(value = "consultations/unregister/{id}")
+    public String unregisterUserFromConsultation(@PathVariable int id, Model model) {
+        User user = getCurrentUser();
+        Consultation consultation = consultationService.getConsultationById(id);
+
+        if (consultation == null) {
+            model.addAttribute("warningMessage", "Consultation with ID " + id + " does not exist");
+        } else if (!consultation.getStudents().contains(user)) {
+            model.addAttribute("warningMessage", "You are not registered to this consultation");
+        } else {
+            consultation.getStudents().remove(user);
+            consultationService.saveConsultation(consultation);
+            String message = "Successfully unregistered user with ID " + user.getId() + " from consultation with ID: " + id;
+            logger.info(message);
+            model.addAttribute("successMessage", "You have successfully unregistered from consultation");
+        }
+
+        model.addAttribute("createdConsultations", user.getCreatedConsultations());
+        model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
+        return "my-consultations";
+    }
+
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userService.findUserByEmail(auth.getName());
     }
 }

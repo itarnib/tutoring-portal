@@ -59,14 +59,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "SUBJECT_ID"))
     private Set<Subject> subjects;
 
-    @OneToMany(mappedBy="teacher")
-    private Set<Consultation> consultations;
+    @OneToMany(mappedBy = "teacher")
+    private Set<Consultation> createdConsultations;
+
+    @ManyToMany(mappedBy = "students")
+    private Set<Consultation> registeredToConsultations;
 
     public User() {
     }
 
-    public User(int id, String name, String surname, String email, String password, int active,
-                Set<Role> roles, Set<Subject> subjects, Set<Consultation> consultations) {
+    public User(int id, String name, String surname, String email, String password, int active, Set<Role> roles,
+                Set<Subject> subjects, Set<Consultation> createdConsultations, Set<Consultation> registeredToConsultations) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -75,7 +78,8 @@ public class User {
         this.active = active;
         this.roles = roles;
         this.subjects = subjects;
-        this.consultations = consultations;
+        this.createdConsultations = createdConsultations;
+        this.registeredToConsultations = registeredToConsultations;
     }
 
     public boolean isAdmin() {
@@ -151,11 +155,19 @@ public class User {
         this.subjects = subjects;
     }
 
-    public Set<Consultation> getConsultations() {
-        return consultations;
+    public Set<Consultation> getCreatedConsultations() {
+        return createdConsultations;
     }
 
-    public void setConsultations(Set<Consultation> consultations) {
-        this.consultations = consultations;
+    public void setCreatedConsultations(Set<Consultation> createdConsultations) {
+        this.createdConsultations = createdConsultations;
+    }
+
+    public Set<Consultation> getRegisteredToConsultations() {
+        return registeredToConsultations;
+    }
+
+    public void setRegisteredToConsultations(Set<Consultation> registeredToConsultations) {
+        this.registeredToConsultations = registeredToConsultations;
     }
 }

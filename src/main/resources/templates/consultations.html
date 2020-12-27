@@ -5,19 +5,23 @@
         <h2 th:if="${consultations.empty}">No consultations yet!</h2>
         <div th:if="${!consultations.empty}">
             <h2>Consultations</h2>
+            <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
             <table class="table">
                 <thead>
                 <tr>
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Teacher</th>
+                    <th>Register</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="consultation : ${consultations}">
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
-                    <td th:text="${consultation.teacher.name}"></td>
+                    <td th:text="${consultation.teacher.name + ' ' + consultation.teacher.surname}"></td>
+                    <td><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
                 </tr>
                 </tbody>
             </table>
