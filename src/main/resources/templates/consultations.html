@@ -12,7 +12,8 @@
                 <tr>
                     <th>Subject</th>
                     <th>Description</th>
-                    <th>Teacher</th>
+                    <th>Address</th>
+                    <th>Tutor</th>
                     <th>Register</th>
                 </tr>
                 </thead>
@@ -20,12 +21,13 @@
                 <tr th:each="consultation : ${consultations}">
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
-                    <td th:text="${consultation.teacher.name + ' ' + consultation.teacher.surname}"></td>
+                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
                     <td><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a>
+        <a th:if="${user != null and user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a>
     </div>
 </html>

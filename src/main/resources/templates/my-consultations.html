@@ -5,27 +5,29 @@
         <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
         <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
         <h1>My Consultations</h1>
-        <h2 th:if="${createdConsultations.empty}">You have not created any consultations yet!</h2>
-        <div th:if="${!createdConsultations.empty}">
+        <h2 th:if="${user.isTutor() and createdConsultations.empty}">You have not created any consultations yet!</h2>
+        <div th:if="${user.isTutor() and !createdConsultations.empty}">
             <h2>Created Consultations</h2>
             <table class="table">
                 <thead>
                 <tr>
                     <th>Subject</th>
                     <th>Description</th>
-                    <th>Teacher</th>
+                    <th>Address</th>
+                    <th>Tutor</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="consultation : ${createdConsultations}">
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
-                    <td th:text="${consultation.teacher.name + ' ' + consultation.teacher.surname}"></td>
+                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br>
+        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br>
         <h2 th:if="${registeredToConsultations.empty}">You are not registered to any consultations yet!</h2>
         <div th:if="${!registeredToConsultations.empty}">
             <h2>Registered to Consultations</h2>
@@ -34,7 +36,8 @@
                 <tr>
                     <th>Subject</th>
                     <th>Description</th>
-                    <th>Teacher</th>
+                    <th>Address</th>
+                    <th>Tutor</th>
                     <th>Unregister</th>
                 </tr>
                 </thead>
@@ -42,7 +45,8 @@
                 <tr th:each="consultation : ${registeredToConsultations}">
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
-                    <td th:text="${consultation.teacher.name + ' ' + consultation.teacher.surname}"></td>
+                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
                     <td><a th:href="@{/consultations/unregister/{id}(id=${consultation.id})}">Unregister</a></td>
                 </tr>
                 </tbody>

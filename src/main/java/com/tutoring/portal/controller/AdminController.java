@@ -108,7 +108,7 @@ public class AdminController {
         return USERS;
     }
 
-    @GetMapping(value = "admin/users/adminrole/add/{id}")
+    @GetMapping(value = "admin/users/role/add/admin/{id}")
     public String addAdminRole(@PathVariable int id, Model model) {
         User user = userService.getUserById(id);
         userService.addAdminRole(user);
@@ -119,10 +119,32 @@ public class AdminController {
         return USERS;
     }
 
-    @GetMapping(value = "admin/users/adminrole/remove/{id}")
+    @GetMapping(value = "admin/users/role/remove/admin/{id}")
     public String removeAdminRole(@PathVariable int id, Model model) {
         User user = userService.getUserById(id);
         userService.removeAdminRole(user);
+        String message = "Successfully removed admin role from user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
+    @GetMapping(value = "admin/users/role/add/tutor/{id}")
+    public String addTutorRole(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.addTutorRole(user);
+        String message = "Successfully added tutor role to user with ID: " + id;
+        logger.info(message);
+
+        model.addAttribute(USERS, userService.getAllUsers());
+        return USERS;
+    }
+
+    @GetMapping(value = "admin/users/role/remove/tutor/{id}")
+    public String removeTutorRole(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        userService.removeTutorRole(user);
         String message = "Successfully removed admin role from user with ID: " + id;
         logger.info(message);
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h2 th:if="${tutors.empty}">No tutors yet!</h2>
+        <div th:if="${!tutors.empty}">
+            <h2>Tutors</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tutor : ${tutors}">
+                    <td th:text="${tutor.name}"></td>
+                    <td th:text="${tutor.surname}"></td>
+                    <td th:text="${tutor.email}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</html>

@@ -35,7 +35,7 @@ public class Consultation {
 
     @ManyToOne
     @JoinColumn(name="USER_ID", nullable=false)
-    private User teacher;
+    private User tutor;
 
     @ManyToMany
     @JoinTable(name = "USER_CONSULTATION",
@@ -43,15 +43,20 @@ public class Consultation {
             inverseJoinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"))
     private Set<User> students;
 
+    @ManyToOne
+    @JoinColumn(name="ADDRESS_ID", nullable=false)
+    private Address address;
+
     public Consultation() {
     }
 
-    public Consultation(int id, String description, Subject subject, User teacher, Set<User> students) {
+    public Consultation(int id, String description, Subject subject, User tutor, Set<User> students, Address address) {
         this.id = id;
         this.description = description;
         this.subject = subject;
-        this.teacher = teacher;
+        this.tutor = tutor;
         this.students = students;
+        this.address = address;
     }
 
     public int getId() {
@@ -78,12 +83,12 @@ public class Consultation {
         this.subject = subject;
     }
 
-    public User getTeacher() {
-        return teacher;
+    public User getTutor() {
+        return tutor;
     }
 
-    public void setTeacher(User teacher) {
-        this.teacher = teacher;
+    public void setTutor(User tutor) {
+        this.tutor = tutor;
     }
 
     public Set<User> getStudents() {
@@ -92,5 +97,13 @@ public class Consultation {
 
     public void setStudents(Set<User> students) {
         this.students = students;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

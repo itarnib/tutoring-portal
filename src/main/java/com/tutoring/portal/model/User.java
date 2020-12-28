@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,29 +48,33 @@ public class User {
     @Column(name = "ACTIVE")
     private int active;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany
     @JoinTable(name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ROLE_ID"))
     private Set<Role> roles;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany
     @JoinTable(name = "USER_SUBJECT",
             joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID", referencedColumnName = "SUBJECT_ID"))
     private Set<Subject> subjects;
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tutor")
     private Set<Consultation> createdConsultations;
 
     @ManyToMany(mappedBy = "students")
     private Set<Consultation> registeredToConsultations;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<Address> addresses;
+
     public User() {
     }
 
     public User(int id, String name, String surname, String email, String password, int active, Set<Role> roles,
-                Set<Subject> subjects, Set<Consultation> createdConsultations, Set<Consultation> registeredToConsultations) {
+                Set<Subject> subjects, Set<Consultation> createdConsultations,
+                Set<Consultation> registeredToConsultations, Set<Address> addresses) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -80,11 +85,21 @@ public class User {
         this.subjects = subjects;
         this.createdConsultations = createdConsultations;
         this.registeredToConsultations = registeredToConsultations;
+        this.addresses = addresses;
     }
 
     public boolean isAdmin() {
         for (Role role : roles) {
             if (role.getRole().equals("ADMIN")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isTutor() {
+        for (Role role : roles) {
+            if (role.getRole().equals("TUTOR")) {
                 return true;
             }
         }
@@ -169,5 +184,13 @@ public class User {
 
     public void setRegisteredToConsultations(Set<Consultation> registeredToConsultations) {
         this.registeredToConsultations = registeredToConsultations;
+    }
+
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
     }
 }

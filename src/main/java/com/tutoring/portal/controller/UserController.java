@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -19,15 +19,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value="/login", method = RequestMethod.GET)
+    @GetMapping(value="/login")
     public ModelAndView login(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
     }
 
-
-    @RequestMapping(value="/registration", method = RequestMethod.GET)
+    @GetMapping(value="/registration")
     public ModelAndView registration(){
         ModelAndView modelAndView = new ModelAndView();
         User user = new User();
@@ -36,7 +35,7 @@ public class UserController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @PostMapping(value = "/registration")
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
         User userExists = userService.findUserByEmail(user.getEmail());
@@ -54,26 +53,28 @@ public class UserController {
         return modelAndView;
     }
 
-    @RequestMapping(value="/admin/adminHome", method = RequestMethod.GET)
+    @GetMapping(value="/admin/adminHome")
     public ModelAndView home(){
         ModelAndView modelAndView = new ModelAndView();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
+        User user = getCurrentUser();
         modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getSurname() + " (" + user.getEmail() + ")");
         modelAndView.addObject("adminMessage","This Page is available to Users with Admin Role");
         modelAndView.setViewName("admin/adminHome");
         return modelAndView;
     }
 
-    @RequestMapping(value="/user/userHome", method = RequestMethod.GET)
+    @GetMapping(value="/user/userHome")
     public ModelAndView user(){
         ModelAndView modelAndView = new ModelAndView();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
+        User user = getCurrentUser();
         modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getSurname() + " (" + user.getEmail() + ")");
         modelAndView.addObject("userMessage","This Page is available to Users with User Role");
         modelAndView.setViewName("user/userHome");
         return modelAndView;
     }
 
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userService.findUserByEmail(auth.getName());
+    }
 }

@@ -37,12 +37,14 @@ public class ConsultationController {
     public String getAllConsultations(Model model) {
         logger.info("Searching for all consultations in the database");
         model.addAttribute("consultations", consultationService.getAllConsultations());
+        model.addAttribute("user", getCurrentUser());
         return "consultations";
     }
 
     @GetMapping(value = "consultations/my-consultations")
     public String getUserConsultations(Model model) {
         User user = getCurrentUser();
+        model.addAttribute("user", user);
         model.addAttribute("createdConsultations", user.getCreatedConsultations());
         model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
         return "my-consultations";
@@ -58,10 +60,11 @@ public class ConsultationController {
     @GetMapping(value = "consultations/add")
     public String addConsultation(Consultation consultation, Model model) {
         User user = getCurrentUser();
-        consultation.setTeacher(user);
+        consultation.setTutor(user);
 
         model.addAttribute("consultation", consultation);
         model.addAttribute("subjects", subjectService.getAllSubjects());
+        model.addAttribute("addresses", user.getAddresses());
         return "add-consultation";
     }
 
@@ -72,14 +75,21 @@ public class ConsultationController {
                     .rejectValue("subject", "error.consultation",
                             "Please select a subject from the list");
         }
+        if (consultation.getAddress() == null) {
+            result
+                    .rejectValue("address", "error.consultation",
+                            "Please select an address from the list");
+        }
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
+            model.addAttribute("addresses", getCurrentUser().getAddresses());
             model.addAttribute("subjects", subjectService.getAllSubjects());
             return "add-consultation";
         }
         consultationService.saveConsultation(consultation);
         logger.info("Consultation successfully saved");
 
+        model.addAttribute("user", getCurrentUser());
         model.addAttribute("consultations", consultationService.getAllConsultations());
         return "consultations";
     }
@@ -90,6 +100,7 @@ public class ConsultationController {
         String message = "Successfully deleted consultation with ID: " + id;
         logger.info(message);
 
+        model.addAttribute("user", getCurrentUser());
         model.addAttribute("consultations", consultationService.getAllConsultations());
         return "consultations";
     }
@@ -101,7 +112,7 @@ public class ConsultationController {
 
         if (consultation == null) {
             model.addAttribute("warningMessage", "Consultation with ID " + id + " does not exist");
-        } else if (consultation.getTeacher().getId() == user.getId()) {
+        } else if (consultation.getTutor().getId() == user.getId()) {
             model.addAttribute("warningMessage", "You cannot register to your own consultation");
         } else if (consultation.getStudents().contains(user)) {
             model.addAttribute("warningMessage", "You are already registered to this consultation");
@@ -113,6 +124,7 @@ public class ConsultationController {
             model.addAttribute("successMessage", "You have successfully registered to consultation");
         }
 
+        model.addAttribute("user", user);
         model.addAttribute("consultations", consultationService.getAllConsultations());
         return "consultations";
     }
@@ -136,6 +148,7 @@ public class ConsultationController {
 
         model.addAttribute("createdConsultations", user.getCreatedConsultations());
         model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
+        model.addAttribute("user", user);
         return "my-consultations";
     }
 
