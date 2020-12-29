@@ -10,6 +10,7 @@
             <table class="table">
                 <thead>
                 <tr>
+                    <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Address</th>
@@ -19,6 +20,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="consultation : ${consultations}">
+                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>

@@ -24,6 +24,11 @@
                 <input type="text" th:field="*{description}" id="description" placeholder="description">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
+            <div class="form-group">
+                <label for="dateTime">Date</label>
+                <input type="datetime-local" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
+            </div>
             <input type="hidden" th:field="*{tutor}" id="tutor" th:value="${consultation.tutor.id}">
             <input type="submit" class="btn btn-primary" value="Add">
         </form>

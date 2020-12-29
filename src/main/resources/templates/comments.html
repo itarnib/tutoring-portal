@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h1 th:text="${tutor.name + ' ' + tutor.surname}"></h1>
+        <h2 th:if="${comments.empty}">No comments yet!</h2>
+        <div th:if="${!comments.empty}">
+            <h2>Comments</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Created</th>
+                    <th>Student</th>
+                    <th>Feedback</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="comment : ${comments}">
+                    <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${comment.student.name + ' ' + comment.student.surname}"></td>
+                    <td th:text="${comment.feedback}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</html>

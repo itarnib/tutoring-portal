@@ -5,12 +5,65 @@
         <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
         <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
         <h1>My Consultations</h1>
-        <h2 th:if="${user.isTutor() and createdConsultations.empty}">You have not created any consultations yet!</h2>
-        <div th:if="${user.isTutor() and !createdConsultations.empty}">
+        <h2 th:if="${user.isTutor() and createdConsultationsPast.empty and createdConsultationsFuture.empty}">You have not created any consultations yet!</h2>
+        <div th:if="${user.isTutor() and !(createdConsultationsPast.empty and createdConsultationsFuture.empty)}">
             <h2>Created Consultations</h2>
-            <table class="table">
+            <h3 th:if="${!createdConsultationsPast.empty}">Past Consultations</h3>
+            <table th:if="${!createdConsultationsPast.empty}" class="table">
                 <thead>
                 <tr>
+                    <th>Date and Time</th>
+                    <th>Subject</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Tutor</th>
+                    <th>View</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consultation : ${createdConsultationsPast}">
+                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${consultation.subject.subjectName}"></td>
+                    <td th:text="${consultation.description}"></td>
+                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
+                    <td><a th:href="@{/consultations/{id}(id=${consultation.id})}">View</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <h3 th:if="${!createdConsultationsFuture.empty}">Future Consultations</h3>
+            <table th:if="${!createdConsultationsFuture.empty}" class="table">
+                <thead>
+                <tr>
+                    <th>Date and Time</th>
+                    <th>Subject</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Tutor</th>
+                    <th>View</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consultation : ${createdConsultationsFuture}">
+                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${consultation.subject.subjectName}"></td>
+                    <td th:text="${consultation.description}"></td>
+                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
+                    <td><a th:href="@{/consultations/{id}(id=${consultation.id})}">View</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br>
+        <h2 th:if="${registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty}">You are not registered to any consultations yet!</h2>
+        <div th:if="${!(registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty)}">
+            <h2>Registered to Consultations</h2>
+            <h3 th:if="${!registeredToConsultationsPast.empty}">Past Consultations</h3>
+            <table th:if="${!registeredToConsultationsPast.empty}" class="table">
+                <thead>
+                <tr>
+                    <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Address</th>
@@ -18,7 +71,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="consultation : ${createdConsultations}">
+                <tr th:each="consultation : ${registeredToConsultationsPast}">
+                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
@@ -26,14 +80,11 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br>
-        <h2 th:if="${registeredToConsultations.empty}">You are not registered to any consultations yet!</h2>
-        <div th:if="${!registeredToConsultations.empty}">
-            <h2>Registered to Consultations</h2>
-            <table class="table">
+            <h3 th:if="${!registeredToConsultationsFuture.empty}">Future Consultations</h3>
+            <table th:if="${!registeredToConsultationsFuture.empty}" class="table">
                 <thead>
                 <tr>
+                    <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
                     <th>Address</th>
@@ -42,7 +93,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="consultation : ${registeredToConsultations}">
+                <tr th:each="consultation : ${registeredToConsultationsFuture}">
+                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>

@@ -69,12 +69,19 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Address> addresses;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tutor")
+    private Set<Comment> receivedComments;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
+    private Set<Comment> createdComments;
+
     public User() {
     }
 
     public User(int id, String name, String surname, String email, String password, int active, Set<Role> roles,
                 Set<Subject> subjects, Set<Consultation> createdConsultations,
-                Set<Consultation> registeredToConsultations, Set<Address> addresses) {
+                Set<Consultation> registeredToConsultations, Set<Address> addresses, Set<Comment> receivedComments,
+                Set<Comment> createdComments) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -86,6 +93,8 @@ public class User {
         this.createdConsultations = createdConsultations;
         this.registeredToConsultations = registeredToConsultations;
         this.addresses = addresses;
+        this.receivedComments = receivedComments;
+        this.createdComments = createdComments;
     }
 
     public boolean isAdmin() {
@@ -192,5 +201,21 @@ public class User {
 
     public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public Set<Comment> getReceivedComments() {
+        return receivedComments;
+    }
+
+    public void setReceivedComments(Set<Comment> receivedComments) {
+        this.receivedComments = receivedComments;
+    }
+
+    public Set<Comment> getCreatedComments() {
+        return createdComments;
+    }
+
+    public void setCreatedComments(Set<Comment> createdComments) {
+        this.createdComments = createdComments;
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Controller
 public class ConsultationController {
@@ -36,7 +38,8 @@ public class ConsultationController {
     @GetMapping(value = "consultations")
     public String getAllConsultations(Model model) {
         logger.info("Searching for all consultations in the database");
-        model.addAttribute("consultations", consultationService.getAllConsultations());
+        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));;
         model.addAttribute("user", getCurrentUser());
         return "consultations";
     }
@@ -45,16 +48,31 @@ public class ConsultationController {
     public String getUserConsultations(Model model) {
         User user = getCurrentUser();
         model.addAttribute("user", user);
-        model.addAttribute("createdConsultations", user.getCreatedConsultations());
-        model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
+        model.addAttribute("createdConsultationsPast", user.getCreatedConsultations().stream()
+                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("createdConsultationsFuture", user.getCreatedConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("registeredToConsultationsPast", user.getRegisteredToConsultations().stream()
+                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("registeredToConsultationsFuture", user.getRegisteredToConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "my-consultations";
     }
 
     @GetMapping(value = "consultations/{id}")
-    public Consultation getConsultation(@PathVariable int id) {
+    public String getConsultation(@PathVariable int id, Model model) {
         String message = "Searching for consultation wth ID: " + id;
         logger.info(message);
-        return consultationService.getConsultationById(id);
+        Consultation consultation = consultationService.getConsultationById(id);
+        User user = getCurrentUser();
+        if (consultation == null) {
+            return "errors/error-404";
+        }
+        if (consultation.getTutor().getId() == user.getId() || user.isAdmin()) {
+            model.addAttribute("consultation", consultation);
+            return "consultation";
+        }
+        return "errors/error-403";
     }
 
     @GetMapping(value = "consultations/add")
@@ -80,6 +98,11 @@ public class ConsultationController {
                     .rejectValue("address", "error.consultation",
                             "Please select an address from the list");
         }
+        if (consultation.getDateTime() == null || !consultation.getDateTime().isAfter(LocalDateTime.now())) {
+            result
+                    .rejectValue("dateTime", "error.consultation",
+                            "Please provide future date and time");
+        }
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
             model.addAttribute("addresses", getCurrentUser().getAddresses());
@@ -90,7 +113,8 @@ public class ConsultationController {
         logger.info("Consultation successfully saved");
 
         model.addAttribute("user", getCurrentUser());
-        model.addAttribute("consultations", consultationService.getAllConsultations());
+        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
     }
 
@@ -101,7 +125,8 @@ public class ConsultationController {
         logger.info(message);
 
         model.addAttribute("user", getCurrentUser());
-        model.addAttribute("consultations", consultationService.getAllConsultations());
+        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
     }
 
@@ -112,6 +137,8 @@ public class ConsultationController {
 
         if (consultation == null) {
             model.addAttribute("warningMessage", "Consultation with ID " + id + " does not exist");
+        } else if (consultation.getDateTime().isBefore(LocalDateTime.now())) {
+            model.addAttribute("warningMessage", "You cannot register to past consultations");
         } else if (consultation.getTutor().getId() == user.getId()) {
             model.addAttribute("warningMessage", "You cannot register to your own consultation");
         } else if (consultation.getStudents().contains(user)) {
@@ -125,7 +152,8 @@ public class ConsultationController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("consultations", consultationService.getAllConsultations());
+        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
     }
 
@@ -136,6 +164,8 @@ public class ConsultationController {
 
         if (consultation == null) {
             model.addAttribute("warningMessage", "Consultation with ID " + id + " does not exist");
+        } else if (consultation.getDateTime().isBefore(LocalDateTime.now())) {
+            model.addAttribute("warningMessage", "You cannot unregister from past consultations");
         } else if (!consultation.getStudents().contains(user)) {
             model.addAttribute("warningMessage", "You are not registered to this consultation");
         } else {
@@ -146,8 +176,14 @@ public class ConsultationController {
             model.addAttribute("successMessage", "You have successfully unregistered from consultation");
         }
 
-        model.addAttribute("createdConsultations", user.getCreatedConsultations());
-        model.addAttribute("registeredToConsultations", user.getRegisteredToConsultations());
+        model.addAttribute("createdConsultationsPast", user.getCreatedConsultations().stream()
+                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("createdConsultationsFuture", user.getCreatedConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("registeredToConsultationsPast", user.getRegisteredToConsultations().stream()
+                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
+        model.addAttribute("registeredToConsultationsFuture", user.getRegisteredToConsultations().stream()
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         model.addAttribute("user", user);
         return "my-consultations";
     }

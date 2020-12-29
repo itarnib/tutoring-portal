@@ -11,6 +11,8 @@
                     <th>Name</th>
                     <th>Surname</th>
                     <th>Email</th>
+                    <th>Comments</th>
+                    <th>Consultations</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -18,6 +20,8 @@
                     <td th:text="${tutor.name}"></td>
                     <td th:text="${tutor.surname}"></td>
                     <td th:text="${tutor.email}"></td>
+                    <td><a th:href="@{/tutors/{id}/comments(id=${tutor.id})}">View comments</a></td>
+                    <td><a th:href="@{/tutors/{id}/consultations(id=${tutor.id})}">View consultations</a></td>
                 </tr>
                 </tbody>
             </table>

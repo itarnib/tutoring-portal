@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h1>Consultation</h1>
+        <dl class="row">
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9" th:text="${consultation.id}"></dd>
+            <dt class="col-sm-3">Date and Time</dt>
+            <dd class="col-sm-9" th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></dd>
+            <dt class="col-sm-3">Subject</dt>
+            <dd class="col-sm-9" th:text="${consultation.subject.subjectName}"></dd>
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9" th:text="${consultation.description}"></dd>
+            <dt class="col-sm-3">Address</dt>
+            <dd class="col-sm-9" th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></dd>
+            <dt class="col-sm-3">Tutor</dt>
+            <dd class="col-sm-9" th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></dd>
+            <dt class="col-sm-3">Registered Students</dt>
+            <dd class="col-sm-9" th:if="${consultation.students.empty}">No registered students yet!</dd>
+            <dd class="col-sm-9" th:if="${!consultation.students.empty}">
+                <ol class="p-0">
+                    <li th:each="student : ${consultation.students}" th:text="${student.name + ' ' + student.surname + ', ' + student.email}"></li>
+                </ol>
+            </dd>
+        </dl>
+    </div>
+</html>

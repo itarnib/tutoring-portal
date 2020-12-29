@@ -1,6 +1,7 @@
 package com.tutoring.portal.model;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -28,6 +30,10 @@ public class Consultation {
     @NotEmpty(message = "Please provide a description")
     @Length(min = 20, message = "Description must have at least 20 characters")
     private String description;
+
+    @Column(name="DATE_TIME")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime dateTime;
 
     @ManyToOne
     @JoinColumn(name="SUBJECT_ID", nullable=false)
@@ -73,6 +79,14 @@ public class Consultation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public Subject getSubject() {
