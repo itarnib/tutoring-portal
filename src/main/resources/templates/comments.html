@@ -9,7 +9,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Created</th>
+                    <th>Created/Updated</th>
                     <th>Student</th>
                     <th>Feedback</th>
                 </tr>
@@ -23,5 +23,13 @@
                 </tbody>
             </table>
         </div>
+        <form action="#" th:action="@{/tutors/{id}/comments/add(id=${tutor.id})}" th:object="${comment}" method="post">
+            <div class="form-group">
+                <label for="feedback">Comment</label>
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('feedback')}" th:errors="*{feedback}"></div>
+                <textarea class="form-control" th:field="*{feedback}" id="feedback" rows="3" placeholder="Leave a comment"></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Add">
+        </form>
     </div>
 </html>

@@ -4,7 +4,7 @@
     <div class="container">
         <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
         <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
-        <h1>My Consultations</h1>
+        <h1>My Consultations</h1><br>
         <h2 th:if="${user.isTutor() and createdConsultationsPast.empty and createdConsultationsFuture.empty}">You have not created any consultations yet!</h2>
         <div th:if="${user.isTutor() and !(createdConsultationsPast.empty and createdConsultationsFuture.empty)}">
             <h2>Created Consultations</h2>
@@ -38,6 +38,7 @@
                     <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
+                    <th>Available places</th>
                     <th>Address</th>
                     <th>Tutor</th>
                     <th>View</th>
@@ -48,6 +49,8 @@
                     <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
+                    <td th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></td>
+                    <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
                     <td><a th:href="@{/consultations/{id}(id=${consultation.id})}">View</a></td>
@@ -55,7 +58,7 @@
                 </tbody>
             </table>
         </div>
-        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br>
+        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br><br>
         <h2 th:if="${registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty}">You are not registered to any consultations yet!</h2>
         <div th:if="${!(registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty)}">
             <h2>Registered to Consultations</h2>
@@ -87,6 +90,7 @@
                     <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
+                    <th>Available places</th>
                     <th>Address</th>
                     <th>Tutor</th>
                     <th>Unregister</th>
@@ -97,6 +101,8 @@
                     <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
+                    <td th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></td>
+                    <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
                     <td><a th:href="@{/consultations/unregister/{id}(id=${consultation.id})}">Unregister</a></td>

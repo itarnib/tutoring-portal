@@ -2,7 +2,7 @@
 <html lang="en">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <h1>Consultation</h1>
+        <h1>Consultation</h1><br>
         <dl class="row">
             <dt class="col-sm-3">ID</dt>
             <dd class="col-sm-9" th:text="${consultation.id}"></dd>
@@ -12,6 +12,9 @@
             <dd class="col-sm-9" th:text="${consultation.subject.subjectName}"></dd>
             <dt class="col-sm-3">Description</dt>
             <dd class="col-sm-9" th:text="${consultation.description}"></dd>
+            <dt class="col-sm-3">Available places</dt>
+            <dd class="col-sm-9" th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></dd>
+            <dd class="col-sm-9" th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></dd>
             <dt class="col-sm-3">Address</dt>
             <dd class="col-sm-9" th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></dd>
             <dt class="col-sm-3">Tutor</dt>

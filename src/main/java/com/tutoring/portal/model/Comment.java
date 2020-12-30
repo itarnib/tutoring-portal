@@ -20,10 +20,10 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "FEEDBACK_ID")
+    @Column(name = "COMMENT_ID")
     private int id;
 
-    @Column(name="DATE_TIME")
+    @Column(name="TIMESTAMP")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime timestamp;
 
@@ -33,11 +33,11 @@ public class Comment {
     private String feedback;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID", nullable=false)
+    @JoinColumn(name="TUTOR_ID", nullable=false)
     private User tutor;
 
     @ManyToOne
-    @JoinColumn(name="USER_ID", nullable=false, insertable=false, updatable=false)
+    @JoinColumn(name="STUDENT_ID", nullable=false)
     private User student;
 
     public Comment() {

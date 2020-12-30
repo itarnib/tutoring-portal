@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -30,6 +31,10 @@ public class Consultation {
     @NotEmpty(message = "Please provide a description")
     @Length(min = 20, message = "Description must have at least 20 characters")
     private String description;
+
+    @Column(name="MAX_STUDENTS_NUMBER")
+    @Min(value = 1, message = "Maximum number of students must be equal or greater than 1")
+    private int maxStudentsNumber;
 
     @Column(name="DATE_TIME")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -56,9 +61,11 @@ public class Consultation {
     public Consultation() {
     }
 
-    public Consultation(int id, String description, Subject subject, User tutor, Set<User> students, Address address) {
+    public Consultation(int id, String description, int maxStudentsNumber, Subject subject, User tutor,
+                        Set<User> students, Address address) {
         this.id = id;
         this.description = description;
+        this.maxStudentsNumber = maxStudentsNumber;
         this.subject = subject;
         this.tutor = tutor;
         this.students = students;
@@ -79,6 +86,14 @@ public class Consultation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getMaxStudentsNumber() {
+        return maxStudentsNumber;
+    }
+
+    public void setMaxStudentsNumber(int maxStudentsNumber) {
+        this.maxStudentsNumber = maxStudentsNumber;
     }
 
     public LocalDateTime getDateTime() {

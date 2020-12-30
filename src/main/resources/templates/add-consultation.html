@@ -5,7 +5,7 @@
         <form action="#" th:action="@{/consultations/add}" th:object="${consultation}" method="post">
             <div class="form-group">
                 <label for="subject">Subject</label>
-                <select th:field="*{subject}" id="subject">
+                <select class="form-control" th:field="*{subject}" id="subject">
                     <option value="">Select Subject</option>
                     <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.subjectName}"></option>
                 </select>
@@ -13,7 +13,7 @@
             </div>
             <div class="form-group">
                 <label for="address">Address</label>
-                <select th:field="*{address}" id="address">
+                <select class="form-control" th:field="*{address}" id="address">
                     <option value="">Select Address</option>
                     <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}"></option>
                 </select>
@@ -21,12 +21,17 @@
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" th:field="*{description}" id="description" placeholder="description">
+                <input type="text" class="form-control" th:field="*{description}" id="description" placeholder="Description">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
             </div>
             <div class="form-group">
+                <label for="maxStudentsNumber">Maximum number of students</label>
+                <input type="number" class="form-control" min="1" th:field="*{maxStudentsNumber}" id="maxStudentsNumber" placeholder="Maximum number of students">
+                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('maxStudentsNumber')}" th:errors="*{maxStudentsNumber}"></div>
+            </div>
+            <div class="form-group">
                 <label for="dateTime">Date</label>
-                <input type="datetime-local" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime">
+                <input type="datetime-local" class="form-control" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
             </div>
             <input type="hidden" th:field="*{tutor}" id="tutor" th:value="${consultation.tutor.id}">

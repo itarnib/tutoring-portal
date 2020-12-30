@@ -143,6 +143,8 @@ public class ConsultationController {
             model.addAttribute("warningMessage", "You cannot register to your own consultation");
         } else if (consultation.getStudents().contains(user)) {
             model.addAttribute("warningMessage", "You are already registered to this consultation");
+        } else if (!(consultation.getStudents().size() < consultation.getMaxStudentsNumber())) {
+            model.addAttribute("warningMessage", "You cannot register to this consultation, maximum number of students will be exceeded");
         } else {
             consultation.getStudents().add(user);
             consultationService.saveConsultation(consultation);

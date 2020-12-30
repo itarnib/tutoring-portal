@@ -13,6 +13,7 @@
                     <th>Date and Time</th>
                     <th>Subject</th>
                     <th>Description</th>
+                    <th>Available places</th>
                     <th>Address</th>
                     <th>Tutor</th>
                     <th>Register</th>
@@ -23,9 +24,13 @@
                     <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${consultation.subject.subjectName}"></td>
                     <td th:text="${consultation.description}"></td>
+                    <td th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></td>
+                    <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
+                    <td th:if="${consultation.students == null}"><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
+                    <td th:if="${consultation.students != null and (consultation.maxStudentsNumber - consultation.students.size()) &gt; 0}"><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
+                    <td th:if="${consultation.students != null and (consultation.maxStudentsNumber - consultation.students.size()) == 0}">No places left</a></td>
                 </tr>
                 </tbody>
             </table>
