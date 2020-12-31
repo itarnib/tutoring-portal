@@ -3,7 +3,6 @@ package com.tutoring.portal.controller;
 import com.tutoring.portal.model.Consultation;
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.ConsultationService;
-import com.tutoring.portal.service.SubjectService;
 import com.tutoring.portal.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,16 +29,13 @@ public class ConsultationController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private SubjectService subjectService;
-
     private static final Logger logger = LoggerFactory.getLogger(ConsultationController.class);
 
     @GetMapping(value = "consultations")
     public String getAllConsultations(Model model) {
         logger.info("Searching for all consultations in the database");
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));;
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         model.addAttribute("user", getCurrentUser());
         return "consultations";
     }
@@ -81,7 +77,7 @@ public class ConsultationController {
         consultation.setTutor(user);
 
         model.addAttribute("consultation", consultation);
-        model.addAttribute("subjects", subjectService.getAllSubjects());
+        model.addAttribute("subjects", user.getSubjects());
         model.addAttribute("addresses", user.getAddresses());
         return "add-consultation";
     }
@@ -106,7 +102,7 @@ public class ConsultationController {
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
             model.addAttribute("addresses", getCurrentUser().getAddresses());
-            model.addAttribute("subjects", subjectService.getAllSubjects());
+            model.addAttribute("subjects", getCurrentUser().getSubjects());
             return "add-consultation";
         }
         consultationService.saveConsultation(consultation);

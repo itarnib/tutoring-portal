@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h2>Select Subjects</h2>
+        <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <form th:action="@{/my-subjects}" enctype="multipart/form-data" method="post">
+            <div class="form-group">
+                <ul>
+                    <li th:each="subject : ${subjects}">
+                        <input type="checkbox" class="form-check-input" name="subjectIds" th:checked="${#lists.contains(mySubjects, subject)}" th:value="${subject.id}"/>
+                        <label th:text="${subject.subjectName}"></label>
+                    </li>
+                </ul>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Save">
+        </form>
+    </div>
+</html>

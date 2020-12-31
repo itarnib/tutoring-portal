@@ -178,7 +178,7 @@ public class AdminController {
     public String getAllSubjects(Model model) {
         logger.info("Searching for all subjects in the database");
         model.addAttribute("subjects", subjectService.getAllSubjects());
-        return "subjects";
+        return "admin/subjects";
     }
 
     @GetMapping(value = "admin/subjects/add")
@@ -194,9 +194,7 @@ public class AdminController {
         }
         subjectService.saveSubject(subject);
         logger.info("Subject successfully saved");
-
-        model.addAttribute("subjects", subjectService.getAllSubjects());
-        return "subjects";
+        return "redirect:/admin/subjects";
     }
 
     @GetMapping(value = "admin/subjects/update/{id}")
@@ -216,9 +214,7 @@ public class AdminController {
         updatedSubject.setSubjectName(subject.getSubjectName());
         subjectService.saveSubject(updatedSubject);
         logger.info("Subject successfully updated");
-
-        model.addAttribute("subjects", subjectService.getAllSubjects());
-        return "subjects";
+        return "redirect:/admin/subjects";
     }
 
     @GetMapping(value = "admin/subjects/delete/{id}")
@@ -226,8 +222,6 @@ public class AdminController {
         subjectService.deleteSubject(id);
         String message = "Successfully deleted subjects with ID: " + id;
         logger.info(message);
-
-        model.addAttribute("subjects", subjectService.getAllSubjects());
-        return "subjects";
+        return "redirect:/admin/subjects";
     }
 }

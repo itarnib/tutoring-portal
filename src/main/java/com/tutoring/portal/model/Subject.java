@@ -2,8 +2,10 @@ package com.tutoring.portal.model;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +28,7 @@ public class Subject {
     @NotEmpty(message = "Please provide a subject name")
     private String subjectName;
 
-    @OneToMany(mappedBy="subject")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="subject")
     private Set<Consultation> consultations;
 
     public Subject() {

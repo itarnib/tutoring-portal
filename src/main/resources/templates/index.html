@@ -2,6 +2,16 @@
 <html lang="en">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <h2>Welcome to Tutoring Portal!</h2>
+        <h2 sec:authorize="isAnonymous()">Welcome to Tutoring Portal!</h2><br>
+        <h2 sec:authorize="isAuthenticated()" th:text="${'Welcome to Tutoring Portal, ' + user.name + ' ' + user.surname + '!'}"></h2><br>
+        <div sec:authorize="isAuthenticated()" class="list-group">
+            <a th:if="${user.isAdmin()}" href="/admin/users" class="list-group-item list-group-item-action">Add, edit, delete users</a>
+            <a th:if="${user.isAdmin()}" href="/admin/subjects" class="list-group-item list-group-item-action">Add, edit, delete subjects</a>
+            <a th:if="${user.isTutor()}" href="/addresses" class="list-group-item list-group-item-action">My Addresses</a>
+            <a th:if="${user.isTutor()}" href="/my-subjects" class="list-group-item list-group-item-action">My Subjects</a>
+            <a href="consultations/my-consultations" class="list-group-item list-group-item-action">My Consultations</a>
+            <a href="/my-comments" class="list-group-item list-group-item-action">My Comments</a>
+            <a href="/profile/update" class="list-group-item list-group-item-action">Edit my profile</a>
+        </div>
     </div>
 </html>

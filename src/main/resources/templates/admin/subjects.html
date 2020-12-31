@@ -9,18 +9,19 @@
                 <thead>
                 <tr>
                     <th>Subject</th>
-                    <th>Tutors</th>
-                    <th>Consultations</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="subject : ${subjects}">
                     <td th:text="${subject.subjectName}"></td>
-                    <td><a th:href="@{/subjects/{id}/tutors(id=${subject.id})}">View tutors</a></td>
-                    <td><a th:href="@{/subjects/{id}/consultations(id=${subject.id})}">View consultations</a></td>
+                    <td><a th:href="@{/admin/subjects/update/{id}(id=${subject.id})}">Edit</a></td>
+                    <td><a th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <a class="btn btn-primary btn-lg active" href="/admin/subjects/add">Add a new subject</a>
     </div>
 </html>

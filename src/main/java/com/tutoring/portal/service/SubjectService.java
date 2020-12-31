@@ -1,7 +1,9 @@
 package com.tutoring.portal.service;
 
 import com.tutoring.portal.model.Subject;
+import com.tutoring.portal.model.User;
 import com.tutoring.portal.repository.SubjectRepository;
+import com.tutoring.portal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ public class SubjectService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Subject> getAllSubjects() {
         List<Subject> subjects = new ArrayList<>();
@@ -34,6 +39,14 @@ public class SubjectService {
     }
 
     public int deleteSubject(int id) {
+        Subject subject = getSubjectById(id);
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            if (user.getSubjects().contains(subject)) {
+                user.getSubjects().remove(subject);
+                userRepository.save(user);
+            }
+        }
         subjectRepository.deleteById(id);
         return id;
     }
