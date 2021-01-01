@@ -73,6 +73,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User updatePassword(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
     public int deleteUser(int id) {
         User user = getUserById(id);
         List<Consultation> consultations = consultationRepository.findAll();

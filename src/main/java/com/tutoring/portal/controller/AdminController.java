@@ -8,12 +8,14 @@ import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -28,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private UserAuthentication userAuthentication;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -103,6 +108,45 @@ public class AdminController {
 
         model.addAttribute(USERS, userService.getAllUsers());
         return USERS;
+    }
+
+    @GetMapping(value = "admin/users/update-password/{id}")
+    public String updateUserPassword(@PathVariable int id, Model model) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return "errors/error-404";
+        }
+        model.addAttribute("id", id);
+        return "admin/update-password";
+    }
+
+    @PostMapping(value = "admin/users/update-password/{id}")
+    public String saveUpdatedPassword(@PathVariable int id, @RequestParam String newPassword, Model model) {
+        User updatedUser = userService.getUserById(id);
+        if (updatedUser == null) {
+            return "errors/error-404";
+        }
+        if (bCryptPasswordEncoder.matches(newPassword, updatedUser.getPassword())) {
+            model.addAttribute("newPasswordError", "Provided password matches user's current password");
+            logger.error("Cannot update password, wrong input");
+            return "admin/update-password";
+        }
+        if (newPassword.length() < 6) {
+            model.addAttribute("newPasswordError", "Password must have at least 6 characters");
+            logger.error("Cannot update password, wrong input");
+            return "admin/update-password";
+        }
+        User currentUser = userAuthentication.getCurrentUser();
+        updatedUser.setPassword(newPassword);
+        userService.updatePassword(updatedUser);
+        logger.info("User's password successfully updated");
+
+        if (updatedUser.getId() == currentUser.getId()) {
+            userAuthentication.updateAuthentication(updatedUser);
+        }
+
+        model.addAttribute("successMessage", "Successfully updated password");
+        return "admin/update-password";
     }
 
     @GetMapping(value = "admin/users/delete/{id}")

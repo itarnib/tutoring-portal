@@ -8,12 +8,14 @@ import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -28,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserAuthentication userAuthentication;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -142,5 +147,37 @@ public class UserController {
         model.addAttribute("user", currentUser);
         model.addAttribute("successMessage", "Successfully updated profile data");
         return "update-user";
+    }
+
+    @GetMapping(value="/update-password")
+    public String updatePassword() {
+        return "update-password";
+    }
+
+    @PostMapping(value = "/update-password")
+    public String saveUpdatedPassword(@RequestParam String oldPassword, @RequestParam String newPassword, Model model) {
+        User currentUser = userAuthentication.getCurrentUser();
+        if (!bCryptPasswordEncoder.matches(oldPassword, currentUser.getPassword())) {
+            model.addAttribute("oldPasswordError", "Provided password does not match your current password");
+            logger.error("Cannot update password, wrong input");
+            return "update-password";
+        }
+        if (bCryptPasswordEncoder.matches(newPassword, currentUser.getPassword())) {
+            model.addAttribute("newPasswordError", "Provided password matches your current password");
+            logger.error("Cannot update password, wrong input");
+            return "update-password";
+        }
+        if (newPassword.length() < 6) {
+            model.addAttribute("newPasswordError", "Password must have at least 6 characters");
+            logger.error("Cannot update password, wrong input");
+            return "update-password";
+        }
+        currentUser.setPassword(newPassword);
+        userService.updatePassword(currentUser);
+        logger.info("Password successfully updated");
+        userAuthentication.updateAuthentication(currentUser);
+
+        model.addAttribute("successMessage", "Successfully updated password");
+        return "update-password";
     }
 }
