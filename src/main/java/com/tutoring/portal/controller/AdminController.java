@@ -4,6 +4,7 @@ import com.tutoring.portal.model.Subject;
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.SubjectService;
 import com.tutoring.portal.service.UserService;
+import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class AdminController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private UserAuthentication userAuthentication;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -53,8 +57,7 @@ public class AdminController {
     public String saveUser(@Valid User user, BindingResult result, Model model) {
         User existingUser = userService.findUserByEmail(user.getEmail());
         if (existingUser != null) {
-            result
-                    .rejectValue("email", "error.user",
+            result.rejectValue("email", "error.user",
                             "There is already a user registered with the email provided");
         }
         if (result.hasErrors()) {
@@ -72,27 +75,31 @@ public class AdminController {
     public String updateUser(@PathVariable int id, Model model) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        return "update-user";
+        return "admin/update-user";
     }
 
     @PostMapping(value = "admin/users/update/{id}")
     public String saveUpdatedUser(@PathVariable int id, @Valid User user, BindingResult result, Model model) {
         User existingUser = userService.findUserByEmail(user.getEmail());
         if (existingUser != null && existingUser.getId() != id) {
-            result
-                    .rejectValue("email", "error.user",
+            result.rejectValue("email", "error.user",
                             "There is already a user registered with the email provided");
         }
         if (result.hasErrors()) {
             logger.error("Cannot update user, wrong input");
-            return "update-user";
+            return "admin/update-user";
         }
+        User currentUser = userAuthentication.getCurrentUser();
         User updatedUser = userService.getUserById(id);
         updatedUser.setName(user.getName());
         updatedUser.setSurname(user.getSurname());
         updatedUser.setEmail(user.getEmail());
         userService.updateUser(updatedUser);
         logger.info("User successfully updated");
+
+        if (updatedUser.getId() == currentUser.getId()) {
+            userAuthentication.updateAuthentication(updatedUser);
+        }
 
         model.addAttribute(USERS, userService.getAllUsers());
         return USERS;

@@ -4,11 +4,10 @@ import com.tutoring.portal.model.Comment;
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.CommentService;
 import com.tutoring.portal.service.UserService;
+import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +28,9 @@ public class TutorController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private UserAuthentication userAuthentication;
+
     private static final Logger logger = LoggerFactory.getLogger(TutorController.class);
 
     @GetMapping(value = "tutors")
@@ -45,7 +47,7 @@ public class TutorController {
         if (tutor == null || !tutor.isTutor()) {
             return "errors/error-404";
         }
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("consultations", tutor.getCreatedConsultations().stream()
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
@@ -59,7 +61,7 @@ public class TutorController {
             return "errors/error-404";
         }
         model.addAttribute("tutor", tutor);
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("comments", tutor.getReceivedComments());
         return "comments";
     }
@@ -70,7 +72,7 @@ public class TutorController {
         if (tutor == null || !tutor.isTutor()) {
             return "errors/error-404";
         }
-        if (tutor.getId() == getCurrentUser().getId()) {
+        if (tutor.getId() == userAuthentication.getCurrentUser().getId()) {
             return "errors/error-403";
         }
         if (result.hasErrors()) {
@@ -79,15 +81,10 @@ public class TutorController {
             model.addAttribute("comments", tutor.getReceivedComments());
             return "comments";
         }
-        comment.setStudent(getCurrentUser());
+        comment.setStudent(userAuthentication.getCurrentUser());
         comment.setTutor(tutor);
         commentService.saveComment(comment);
         logger.info("Comment successfully saved");
         return "redirect:/tutors/" + id + "/comments";
-    }
-
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findUserByEmail(auth.getName());
     }
 }

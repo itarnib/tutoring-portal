@@ -4,11 +4,10 @@ import com.tutoring.portal.model.Address;
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.AddressService;
 import com.tutoring.portal.service.UserService;
+import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,18 +26,21 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
+    @Autowired
+    private UserAuthentication userAuthentication;
+
     private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
 
     @GetMapping(value = "addresses")
     public String getUserAddresses(Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         model.addAttribute("addresses", user.getAddresses());
         return "addresses";
     }
 
     @GetMapping(value = "addresses/add")
     public String addAddress(Address address, Model model) {
-        address.setUser(getCurrentUser());
+        address.setUser(userAuthentication.getCurrentUser());
         model.addAttribute("address", address);
         return "add-address";
     }
@@ -52,7 +54,7 @@ public class AddressController {
         addressService.saveAddress(address);
         logger.info("Address successfully saved");
 
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         model.addAttribute("addresses", user.getAddresses());
         model.addAttribute("successMessage", "Successfully added new address");
         return "addresses";
@@ -61,14 +63,15 @@ public class AddressController {
     @GetMapping(value = "addresses/update/{id}")
     public String updateAddress(@PathVariable int id, Model model) {
         Address address = addressService.getAddressById(id);
+        User user = userAuthentication.getCurrentUser();
         if (address == null) {
             model.addAttribute("warningMessage", "Address with ID " + id + " does not exist");
-            model.addAttribute("addresses", getCurrentUser().getAddresses());
+            model.addAttribute("addresses", user.getAddresses());
             return "addresses";
         }
-        if (address.getUser().getId() != getCurrentUser().getId()) {
+        if (address.getUser().getId() != user.getId()) {
             model.addAttribute("warningMessage", "Address with ID " + id + " does not belong to you");
-            model.addAttribute("addresses", getCurrentUser().getAddresses());
+            model.addAttribute("addresses", user.getAddresses());
             return "addresses";
         }
         model.addAttribute("address", address);
@@ -85,13 +88,13 @@ public class AddressController {
         logger.info("Address successfully updated");
 
         model.addAttribute("successMessage", "Address was successfully updated");
-        model.addAttribute("addresses", getCurrentUser().getAddresses());
+        model.addAttribute("addresses", userAuthentication.getCurrentUser().getAddresses());
         return "addresses";
     }
 
     @GetMapping(value = "addresses/delete/{id}")
     public String deleteAddress(@PathVariable int id, Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
 
         if (addressService.getAddressById(id) == null) {
             model.addAttribute("warningMessage", "Address with ID " + id + " does not exist");
@@ -106,10 +109,5 @@ public class AddressController {
 
         model.addAttribute("addresses", user.getAddresses());
         return "addresses";
-    }
-
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findUserByEmail(auth.getName());
     }
 }

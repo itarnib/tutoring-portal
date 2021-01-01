@@ -5,11 +5,10 @@ import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.ConsultationService;
 import com.tutoring.portal.service.SubjectService;
 import com.tutoring.portal.service.UserService;
+import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +31,9 @@ public class SubjectController {
 
     @Autowired
     private ConsultationService consultationService;
+
+    @Autowired
+    private UserAuthentication userAuthentication;
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
@@ -65,13 +67,13 @@ public class SubjectController {
                 .filter(c -> c.getSubject().getId() == id)
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now()))
                 .collect(Collectors.toList()));
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         return "consultations";
     }
 
     @GetMapping(value = "my-subjects")
     public String mySubjects(Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         if (!user.isTutor()) {
             return "errors/error-403";
         }
@@ -82,7 +84,7 @@ public class SubjectController {
 
     @PostMapping(value = "my-subjects")
     public String updateMySubjects(@RequestParam List<Integer> subjectIds, Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         if (!user.isTutor()) {
             return "errors/error-403";
         }
@@ -99,10 +101,5 @@ public class SubjectController {
         model.addAttribute("subjects", subjectService.getAllSubjects());
         model.addAttribute("mySubjects", user.getSubjects());
         return "select-subjects";
-    }
-
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findUserByEmail(auth.getName());
     }
 }

@@ -2,9 +2,8 @@
 <html lang="en">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <h2>My Profile</h2>
-        <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
-        <form th:action="@{/profile/update}" th:object="${user}" method="post">
+        <h2>Update User</h2>
+        <form th:action="@{/admin/users/update/{id}(id=${user.id})}" th:object="${user}" method="post">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" th:field="*{name}" id="name" value="${user.name}">

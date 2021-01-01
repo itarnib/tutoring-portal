@@ -4,11 +4,10 @@ import com.tutoring.portal.model.Consultation;
 import com.tutoring.portal.model.User;
 import com.tutoring.portal.service.ConsultationService;
 import com.tutoring.portal.service.UserService;
+import com.tutoring.portal.util.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +28,9 @@ public class ConsultationController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserAuthentication userAuthentication;
+
     private static final Logger logger = LoggerFactory.getLogger(ConsultationController.class);
 
     @GetMapping(value = "consultations")
@@ -36,13 +38,13 @@ public class ConsultationController {
         logger.info("Searching for all consultations in the database");
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         return "consultations";
     }
 
     @GetMapping(value = "consultations/my-consultations")
     public String getUserConsultations(Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         model.addAttribute("user", user);
         model.addAttribute("createdConsultationsPast", user.getCreatedConsultations().stream()
                 .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
@@ -60,7 +62,7 @@ public class ConsultationController {
         String message = "Searching for consultation wth ID: " + id;
         logger.info(message);
         Consultation consultation = consultationService.getConsultationById(id);
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         if (consultation == null) {
             return "errors/error-404";
         }
@@ -73,7 +75,7 @@ public class ConsultationController {
 
     @GetMapping(value = "consultations/add")
     public String addConsultation(Consultation consultation, Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         consultation.setTutor(user);
 
         model.addAttribute("consultation", consultation);
@@ -85,30 +87,28 @@ public class ConsultationController {
     @PostMapping(value = "consultations/add")
     public String saveConsultation(@Valid Consultation consultation, BindingResult result, Model model) {
         if (consultation.getSubject() == null) {
-            result
-                    .rejectValue("subject", "error.consultation",
+            result.rejectValue("subject", "error.consultation",
                             "Please select a subject from the list");
         }
         if (consultation.getAddress() == null) {
-            result
-                    .rejectValue("address", "error.consultation",
+            result.rejectValue("address", "error.consultation",
                             "Please select an address from the list");
         }
         if (consultation.getDateTime() == null || !consultation.getDateTime().isAfter(LocalDateTime.now())) {
-            result
-                    .rejectValue("dateTime", "error.consultation",
+            result.rejectValue("dateTime", "error.consultation",
                             "Please provide future date and time");
         }
         if (result.hasErrors()) {
             logger.error("Cannot save consultation, wrong input");
-            model.addAttribute("addresses", getCurrentUser().getAddresses());
-            model.addAttribute("subjects", getCurrentUser().getSubjects());
+            User user = userAuthentication.getCurrentUser();
+            model.addAttribute("addresses", user.getAddresses());
+            model.addAttribute("subjects", user.getSubjects());
             return "add-consultation";
         }
         consultationService.saveConsultation(consultation);
         logger.info("Consultation successfully saved");
 
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
@@ -120,7 +120,7 @@ public class ConsultationController {
         String message = "Successfully deleted consultation with ID: " + id;
         logger.info(message);
 
-        model.addAttribute("user", getCurrentUser());
+        model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
@@ -128,7 +128,7 @@ public class ConsultationController {
 
     @GetMapping(value = "consultations/register/{id}")
     public String registerUserToConsultation(@PathVariable int id, Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         Consultation consultation = consultationService.getConsultationById(id);
 
         if (consultation == null) {
@@ -157,7 +157,7 @@ public class ConsultationController {
 
     @GetMapping(value = "consultations/unregister/{id}")
     public String unregisterUserFromConsultation(@PathVariable int id, Model model) {
-        User user = getCurrentUser();
+        User user = userAuthentication.getCurrentUser();
         Consultation consultation = consultationService.getConsultationById(id);
 
         if (consultation == null) {
@@ -184,10 +184,5 @@ public class ConsultationController {
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         model.addAttribute("user", user);
         return "my-consultations";
-    }
-
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findUserByEmail(auth.getName());
     }
 }
