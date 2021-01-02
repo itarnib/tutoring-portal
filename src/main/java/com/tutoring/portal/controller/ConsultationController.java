@@ -62,15 +62,12 @@ public class ConsultationController {
         String message = "Searching for consultation wth ID: " + id;
         logger.info(message);
         Consultation consultation = consultationService.getConsultationById(id);
-        User user = userAuthentication.getCurrentUser();
         if (consultation == null) {
             return "errors/error-404";
         }
-        if (consultation.getTutor().getId() == user.getId() || user.isAdmin()) {
-            model.addAttribute("consultation", consultation);
-            return "consultation";
-        }
-        return "errors/error-403";
+        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("consultation", consultation);
+        return "consultation";
     }
 
     @GetMapping(value = "consultations/add")
@@ -114,13 +111,90 @@ public class ConsultationController {
         return "consultations";
     }
 
+    @GetMapping(value = "consultations/update/{id}")
+    public String updateConsultation(@PathVariable int id, Model model) {
+        Consultation consultation = consultationService.getConsultationById(id);
+        User user = userAuthentication.getCurrentUser();
+
+        if (consultation == null) {
+            return "errors/error-404";
+        }
+        if (consultation.getTutor().getId() != user.getId() && !user.isAdmin()) {
+            return "errors/error-403";
+        }
+        if (consultation.getDateTime().isBefore(LocalDateTime.now())) {
+            model.addAttribute("warningMessage", "You cannot update past consultations");
+            model.addAttribute("user", user);
+            model.addAttribute("consultation", consultation);
+            return "consultation";
+        }
+
+        model.addAttribute("consultation", consultation);
+        model.addAttribute("subjects", user.getSubjects());
+        model.addAttribute("addresses", user.getAddresses());
+        return "update-consultation";
+    }
+
+    @PostMapping(value = "consultations/update/{id}")
+    public String saveUpdatedConsultation(@PathVariable int id, @Valid Consultation consultation, BindingResult result, Model model) {
+        User user = userAuthentication.getCurrentUser();
+        Consultation oldConsultation = consultationService.getConsultationById(id);
+
+        if (oldConsultation == null) {
+            return "errors/error-404";
+        }
+        if (consultation.getTutor().getId() != user.getId() && !user.isAdmin()) {
+            return "errors/error-403";
+        }
+        if (consultation.getId() != id) {
+            return "errors/error";
+        }
+
+        if (consultation.getSubject() == null) {
+            result.rejectValue("subject", "error.consultation",
+                    "Please select a subject from the list");
+        }
+        if (consultation.getAddress() == null) {
+            result.rejectValue("address", "error.consultation",
+                    "Please select an address from the list");
+        }
+        if (consultation.getDateTime() == null || !consultation.getDateTime().isAfter(LocalDateTime.now())) {
+            result.rejectValue("dateTime", "error.consultation",
+                    "Please provide future date and time");
+        }
+        if (result.hasErrors()) {
+            logger.error("Cannot update consultation, wrong input");
+            model.addAttribute("addresses", user.getAddresses());
+            model.addAttribute("subjects", user.getSubjects());
+            return "update-consultation";
+        }
+
+        consultation.setStudents(oldConsultation.getStudents());
+        consultationService.saveConsultation(consultation);
+        String message = "Consultation successfully updated";
+        logger.info(message);
+        model.addAttribute("successMessage", message);
+        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("consultation", consultation);
+        return "consultation";
+    }
+
     @GetMapping(value = "consultations/delete/{id}")
     public String deleteConsultation(@PathVariable int id, Model model) {
+        Consultation consultation = consultationService.getConsultationById(id);
+        User currentUser = userAuthentication.getCurrentUser();
+        if (consultation == null) {
+            return "errors/error-404";
+        }
+        if (consultation.getTutor().getId() != currentUser.getId() && !currentUser.isAdmin()) {
+            return "errors/error-403";
+        }
         consultationService.deleteConsultation(id);
         String message = "Successfully deleted consultation with ID: " + id;
         logger.info(message);
 
-        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("successMessage", message);
+        model.addAttribute("user", currentUser);
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
         return "consultations";
@@ -139,7 +213,7 @@ public class ConsultationController {
             model.addAttribute("warningMessage", "You cannot register to your own consultation");
         } else if (consultation.getStudents().contains(user)) {
             model.addAttribute("warningMessage", "You are already registered to this consultation");
-        } else if (!(consultation.getStudents().size() < consultation.getMaxStudentsNumber())) {
+        } else if (consultation.getStudents().size() >= consultation.getMaxStudentsNumber()) {
             model.addAttribute("warningMessage", "You cannot register to this consultation, maximum number of students will be exceeded");
         } else {
             consultation.getStudents().add(user);
@@ -149,10 +223,9 @@ public class ConsultationController {
             model.addAttribute("successMessage", "You have successfully registered to consultation");
         }
 
-        model.addAttribute("user", user);
-        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
-        return "consultations";
+        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("consultation", consultation);
+        return "consultation";
     }
 
     @GetMapping(value = "consultations/unregister/{id}")
@@ -174,15 +247,8 @@ public class ConsultationController {
             model.addAttribute("successMessage", "You have successfully unregistered from consultation");
         }
 
-        model.addAttribute("createdConsultationsPast", user.getCreatedConsultations().stream()
-                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
-        model.addAttribute("createdConsultationsFuture", user.getCreatedConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
-        model.addAttribute("registeredToConsultationsPast", user.getRegisteredToConsultations().stream()
-                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now())).collect(Collectors.toList()));
-        model.addAttribute("registeredToConsultationsFuture", user.getRegisteredToConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
-        model.addAttribute("user", user);
-        return "my-consultations";
+        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("consultation", consultation);
+        return "consultation";
     }
 }

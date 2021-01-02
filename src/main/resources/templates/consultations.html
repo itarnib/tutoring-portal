@@ -16,7 +16,7 @@
                     <th>Available places</th>
                     <th>Address</th>
                     <th>Tutor</th>
-                    <th>Register</th>
+                    <th>View</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -28,9 +28,7 @@
                     <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td th:if="${consultation.students == null}"><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
-                    <td th:if="${consultation.students != null and (consultation.maxStudentsNumber - consultation.students.size()) &gt; 0}"><a th:href="@{/consultations/register/{id}(id=${consultation.id})}">Register</a></td>
-                    <td th:if="${consultation.students != null and (consultation.maxStudentsNumber - consultation.students.size()) == 0}">No places left</a></td>
+                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
                 </tr>
                 </tbody>
             </table>

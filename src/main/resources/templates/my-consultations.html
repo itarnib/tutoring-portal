@@ -27,7 +27,7 @@
                     <td th:text="${consultation.description}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td><a th:href="@{/consultations/{id}(id=${consultation.id})}">View</a></td>
+                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -53,12 +53,14 @@
                     <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td><a th:href="@{/consultations/{id}(id=${consultation.id})}">View</a></td>
+                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <a th:if="${user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br><br>
+        <div th:if="${user.isTutor()}">
+            <a class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a><br><br>
+        </div>
         <h2 th:if="${registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty}">You are not registered to any consultations yet!</h2>
         <div th:if="${!(registeredToConsultationsPast.empty and registeredToConsultationsFuture.empty)}">
             <h2>Registered to Consultations</h2>
@@ -71,6 +73,7 @@
                     <th>Description</th>
                     <th>Address</th>
                     <th>Tutor</th>
+                    <th>View</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -80,6 +83,7 @@
                     <td th:text="${consultation.description}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
+                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
                 </tr>
                 </tbody>
             </table>
@@ -93,7 +97,7 @@
                     <th>Available places</th>
                     <th>Address</th>
                     <th>Tutor</th>
-                    <th>Unregister</th>
+                    <th>View</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -105,7 +109,7 @@
                     <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
                     <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
                     <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td><a th:href="@{/consultations/unregister/{id}(id=${consultation.id})}">Unregister</a></td>
+                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
                 </tr>
                 </tbody>
             </table>

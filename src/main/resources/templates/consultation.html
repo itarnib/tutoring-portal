@@ -3,6 +3,8 @@
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
         <h1>Consultation</h1><br>
+        <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <div class="alert alert-danger" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
         <dl class="row">
             <dt class="col-sm-3">ID</dt>
             <dd class="col-sm-9" th:text="${consultation.id}"></dd>
@@ -19,13 +21,17 @@
             <dd class="col-sm-9" th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></dd>
             <dt class="col-sm-3">Tutor</dt>
             <dd class="col-sm-9" th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></dd>
-            <dt class="col-sm-3">Registered Students</dt>
-            <dd class="col-sm-9" th:if="${consultation.students.empty}">No registered students yet!</dd>
-            <dd class="col-sm-9" th:if="${!consultation.students.empty}">
+            <dt th:if="${consultation.tutor.id == user.id or user.isAdmin()}" class="col-sm-3">Registered Students</dt>
+            <dd class="col-sm-9" th:if="${(consultation.tutor.id == user.id or user.isAdmin()) and consultation.students.empty}">No registered students yet!</dd>
+            <dd class="col-sm-9" th:if="${(consultation.tutor.id == user.id or user.isAdmin()) and !consultation.students.empty}">
                 <ol class="p-0">
                     <li th:each="student : ${consultation.students}" th:text="${student.name + ' ' + student.surname + ', ' + student.email}"></li>
                 </ol>
             </dd>
         </dl>
+        <a th:if="${consultation.tutor.id != user.id and (consultation.students != null and (consultation.maxStudentsNumber - consultation.students.size()) &gt; 0) and !(#lists.contains(consultation.students, user))}" class="btn btn-success" th:href="@{/consultations/register/{id}(id=${consultation.id})}" role="button">Register</a>
+        <a th:if="${consultation.tutor.id != user.id and #lists.contains(consultation.students, user)}" class="btn btn-danger" th:href="@{/consultations/unregister/{id}(id=${consultation.id})}" role="button">Unregister</a>
+        <a th:if="${consultation.tutor.id == user.id or user.isAdmin()}" class="btn btn-primary" th:href="@{/consultations/update/{id}(id=${consultation.id})}" role="button">Update</a>
+        <a th:if="${consultation.tutor.id == user.id or user.isAdmin()}" class="btn btn-danger" th:href="@{/consultations/delete/{id}(id=${consultation.id})}" role="button">Delete</a>
     </div>
 </html>
