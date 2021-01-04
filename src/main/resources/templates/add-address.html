@@ -2,25 +2,25 @@
 <html lang="en">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <form action="#" th:action="@{/addresses/add}" th:object="${address}" method="post">
+        <form th:action="@{/addresses/add}" th:object="${address}" method="post">
             <div class="form-group">
                 <label for="country">Country</label>
-                <input type="text" th:field="*{country}" id="country" placeholder="Country">
+                <input type="text" class="form-control" th:field="*{country}" id="country" placeholder="Country">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
             </div>
             <div class="form-group">
                 <label for="city">City</label>
-                <input type="text" th:field="*{city}" id="city" placeholder="City">
+                <input type="text" class="form-control" th:field="*{city}" id="city" placeholder="City">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
             </div>
             <div class="form-group">
                 <label for="street">Street</label>
-                <input type="text" th:field="*{street}" id="street" placeholder="Street">
+                <input type="text" class="form-control" th:field="*{street}" id="street" placeholder="Street">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
             </div>
             <div class="form-group">
                 <label for="streetNumber">Street Number</label>
-                <input type="text" th:field="*{streetNumber}" id="streetNumber" placeholder="Street Number">
+                <input type="text" class="form-control" th:field="*{streetNumber}" id="streetNumber" placeholder="Street Number">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('streetNumber')}" th:errors="*{streetNumber}"></div>
             </div>
             <input type="hidden" th:field="*{user}" id="user" th:value="${address.user.id}">

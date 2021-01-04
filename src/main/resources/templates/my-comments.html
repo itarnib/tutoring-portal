@@ -41,8 +41,8 @@
                     <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
                     <td th:text="${comment.tutor.name + ' ' + comment.tutor.surname}"></td>
                     <td th:text="${comment.feedback}"></td>
-                    <td><a th:href="@{/my-comments/update/{id}(id=${comment.id})}">Edit</a></td>
-                    <td><a th:href="@{/my-comments/delete/{id}(id=${comment.id})}">Delete</a></td>
+                    <td><a class="btn btn-info" th:href="@{/my-comments/update/{id}(id=${comment.id})}" role="button">Edit</a></td>
+                    <td><a class="btn btn-danger" th:href="@{/my-comments/delete/{id}(id=${comment.id})}" role="button">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

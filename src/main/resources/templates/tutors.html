@@ -22,8 +22,8 @@
                     <td th:text="${tutor.surname}"></td>
                     <td><span th:each="subject, index : ${tutor.subjects}" th:text="!${index.last} ? ${subject.subjectName} + ', ': ${subject.subjectName}"></span></td>
                     <td th:text="${tutor.email}"></td>
-                    <td><a th:href="@{/tutors/{id}/comments(id=${tutor.id})}">View comments</a></td>
-                    <td><a th:href="@{/tutors/{id}/consultations(id=${tutor.id})}">View consultations</a></td>
+                    <td><a class="btn btn-info" th:href="@{/tutors/{id}/comments(id=${tutor.id})}" role="button">View comments</a></td>
+                    <td><a class="btn btn-info" th:href="@{/tutors/{id}/consultations(id=${tutor.id})}" role="button">View consultations</a></td>
                 </tr>
                 </tbody>
             </table>

@@ -16,8 +16,8 @@
                 <tbody>
                 <tr th:each="subject : ${subjects}">
                     <td th:text="${subject.subjectName}"></td>
-                    <td><a th:href="@{/admin/subjects/update/{id}(id=${subject.id})}">Edit</a></td>
-                    <td><a th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}">Delete</a></td>
+                    <td><a class="btn btn-info" th:href="@{/admin/subjects/update/{id}(id=${subject.id})}" role="button">Edit</a></td>
+                    <td><a class="btn btn-danger" th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}" role="button">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

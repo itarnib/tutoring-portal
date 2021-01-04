@@ -18,8 +18,8 @@
                 <tbody>
                 <tr th:each="address : ${addresses}">
                     <td th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}"></td>
-                    <td><a th:href="@{/addresses/update/{id}(id=${address.id})}">Edit</a></td>
-                    <td><a th:href="@{/addresses/delete/{id}(id=${address.id})}">Delete</a></td>
+                    <td><a class="btn btn-info" th:href="@{/addresses/update/{id}(id=${address.id})}" role="button">Edit</a></td>
+                    <td><a class="btn btn-danger" th:href="@{/addresses/delete/{id}(id=${address.id})}" role="button">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

@@ -16,8 +16,8 @@
                 <tbody>
                 <tr th:each="subject : ${subjects}">
                     <td th:text="${subject.subjectName}"></td>
-                    <td><a th:href="@{/subjects/{id}/tutors(id=${subject.id})}">View tutors</a></td>
-                    <td><a th:href="@{/subjects/{id}/consultations(id=${subject.id})}">View consultations</a></td>
+                    <td><a class="btn btn-info" th:href="@{/subjects/{id}/tutors(id=${subject.id})}" role="button">View tutors</a></td>
+                    <td><a class="btn btn-info" th:href="@{/subjects/{id}/consultations(id=${subject.id})}" role="button">View consultations</a></td>
                 </tr>
                 </tbody>
             </table>
