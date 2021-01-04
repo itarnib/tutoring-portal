@@ -40,16 +40,31 @@ public class TutorController {
         return "tutors";
     }
 
+    /**
+     * Returns view with future consultations where tutor ID matches provided ID.
+     * If tutor with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id tutor's ID
+     * @param model a Model object used in the view
+     * @return consultations view or error-404 view, if tutor with provided ID doesn't exist
+     */
     @GetMapping(value = "tutors/{id}/consultations")
     public String getTutorConsultations(@PathVariable int id,  Model model) {
         logger.info("Searching for tutor wth ID: " + id);
         User tutor = userService.getUserById(id);
+
+        // return error-404 view if user with provided ID doesn't exist or is not a tutor
         if (tutor == null || !tutor.isTutor()) {
             return "errors/error-404";
         }
+
         model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("consultations", tutor.getCreatedConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+                // filter list items to contain only future consultations
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList()));
+        model.addAttribute("title", "Future Consultations with " + tutor.getName() + " " + tutor.getSurname());
+
         return "consultations";
     }
 

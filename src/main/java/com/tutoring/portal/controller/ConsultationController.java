@@ -33,12 +33,43 @@ public class ConsultationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsultationController.class);
 
-    @GetMapping(value = "consultations")
-    public String getAllConsultations(Model model) {
-        logger.info("Searching for all consultations in the database");
+    /**
+     * Returns a view with past consultations.
+     *
+     * @param model a Model object used in the view
+     * @return consultations view
+     */
+    @GetMapping(value = "consultations/past")
+    public String getAllPastConsultations(Model model) {
+        logger.info("Searching for all past consultations");
+
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+                // filter list items to contain only past consultations
+                .filter(c -> c.getDateTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList()));
         model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("title", "Past Consultations");
+
+        return "consultations";
+    }
+
+    /**
+     * Returns a view with future consultations.
+     *
+     * @param model a Model object used in the view
+     * @return consultations view
+     */
+    @GetMapping(value = "consultations/future")
+    public String getAllFutureConsultations(Model model) {
+        logger.info("Searching for all future consultations");
+
+        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
+                // filter list items to contain only future consultations
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList()));
+        model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("title", "Future Consultations");
+
         return "consultations";
     }
 
@@ -81,6 +112,15 @@ public class ConsultationController {
         return "add-consultation";
     }
 
+    /**
+     * Saves consultation and redirects to future consultations view, if provided consultation object is valid.
+     * If validation error occurs, returns add-consultation view.
+     *
+     * @param consultation created Consultation object
+     * @param result a BindingResult object that holds the result of the validation and binding
+     * @param model a Model object used in the view
+     * @return redirect to future consultations view or add-consultation view if validation error occurs
+     */
     @PostMapping(value = "consultations/add")
     public String saveConsultation(@Valid Consultation consultation, BindingResult result, Model model) {
         if (consultation.getSubject() == null) {
@@ -105,10 +145,7 @@ public class ConsultationController {
         consultationService.saveConsultation(consultation);
         logger.info("Consultation successfully saved");
 
-        model.addAttribute("user", userAuthentication.getCurrentUser());
-        model.addAttribute("consultations", consultationService.getAllConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
-        return "consultations";
+        return "redirect:/consultations/future";
     }
 
     @GetMapping(value = "consultations/update/{id}")
@@ -179,24 +216,42 @@ public class ConsultationController {
         return "consultation";
     }
 
+    /**
+     * Deletes consultation with provided ID.
+     * Returns view with future consultations if deletion was successful.
+     * If consultation with provided ID doesn't exist, returns error-404 view.
+     * If current user doesn't have permission to delete this consultation, returns error-403 view.
+     *
+     * @param id consultation's ID
+     * @param model a Model object used in the view
+     * @return consultations view or error view, if error occurs
+     */
     @GetMapping(value = "consultations/delete/{id}")
     public String deleteConsultation(@PathVariable int id, Model model) {
         Consultation consultation = consultationService.getConsultationById(id);
         User currentUser = userAuthentication.getCurrentUser();
+
+        // return error-404 view if consultation with provided ID doesn't exist
         if (consultation == null) {
             return "errors/error-404";
         }
+        // return error-403 view if current user doesn't have permission to delete this consultation
         if (consultation.getTutor().getId() != currentUser.getId() && !currentUser.isAdmin()) {
             return "errors/error-403";
         }
+
         consultationService.deleteConsultation(id);
         String message = "Successfully deleted consultation with ID: " + id;
         logger.info(message);
 
         model.addAttribute("successMessage", message);
         model.addAttribute("user", currentUser);
+        model.addAttribute("title", "Future Consultations");
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
-                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+                // filter list items to contain only future consultations
+                .filter(c -> c.getDateTime().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList()));
+
         return "consultations";
     }
 

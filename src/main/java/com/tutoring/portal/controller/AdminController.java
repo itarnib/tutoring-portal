@@ -46,13 +46,6 @@ public class AdminController {
         return USERS;
     }
 
-    @GetMapping(value = "admin/users/{id}")
-    public User getUser(@PathVariable int id) {
-        String message = "Searching for user wth ID: " + id;
-        logger.info(message);
-        return userService.getUserById(id);
-    }
-
     @GetMapping(value = "admin/users/register")
     public String registerUser(User user) {
         return "register-user";

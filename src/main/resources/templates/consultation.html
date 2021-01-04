@@ -22,7 +22,7 @@
             <dt class="col-sm-3">Tutor</dt>
             <dd class="col-sm-9" th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></dd>
             <dt th:if="${consultation.tutor.id == user.id or user.isAdmin()}" class="col-sm-3">Registered Students</dt>
-            <dd class="col-sm-9" th:if="${(consultation.tutor.id == user.id or user.isAdmin()) and consultation.students.empty}">No registered students yet!</dd>
+            <dd class="col-sm-9" th:if="${(consultation.tutor.id == user.id or user.isAdmin()) and consultation.students.empty}">No students registered for this consultation</dd>
             <dd class="col-sm-9" th:if="${(consultation.tutor.id == user.id or user.isAdmin()) and !consultation.students.empty}">
                 <ol class="p-0">
                     <li th:each="student : ${consultation.students}" th:text="${student.name + ' ' + student.surname + ', ' + student.email}"></li>

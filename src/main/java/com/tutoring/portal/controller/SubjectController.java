@@ -56,18 +56,33 @@ public class SubjectController {
         return "tutors";
     }
 
+    /**
+     * Returns view with future consultations where subject ID matches provided ID.
+     * If subject with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id subject's ID
+     * @param model a Model object used in the view
+     * @return consultations view or error-404 view, if subject doesn't exist
+     */
     @GetMapping(value = "subjects/{id}/consultations")
     public String getAllConsultationsBySubject(@PathVariable int id, Model model) {
         Subject subject = subjectService.getSubjectById(id);
+
+        // return error-404 view if subject with provided ID doesn't exist
         if (subject == null) {
             return "errors/error-404";
         }
+
         logger.info("Searching for all future consultations by subject: " + subject.getSubjectName());
+
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getSubject().getId() == id)
+                // filter list items to contain only future consultations
                 .filter(c -> c.getDateTime().isAfter(LocalDateTime.now()))
                 .collect(Collectors.toList()));
         model.addAttribute("user", userAuthentication.getCurrentUser());
+        model.addAttribute("title", "Future Consultations for " + subject.getSubjectName());
+
         return "consultations";
     }
 
