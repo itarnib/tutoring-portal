@@ -1,7 +1,5 @@
 package com.tutoring.portal.model;
 
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

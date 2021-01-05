@@ -2,7 +2,7 @@
 <html lang="en">
     <div th:replace="fragments/header :: header"></div>
     <div class="container">
-        <form action="#" th:action="@{/consultations/add}" th:object="${consultation}" method="post">
+        <form th:action="@{/consultations/add}" th:object="${consultation}" method="post">
             <div class="form-group">
                 <label for="subject">Subject</label>
                 <select class="form-control" th:field="*{subject}" id="subject">
@@ -30,8 +30,8 @@
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('maxStudentsNumber')}" th:errors="*{maxStudentsNumber}"></div>
             </div>
             <div class="form-group">
-                <label for="dateTime">Date</label>
-                <input type="datetime-local" class="form-control" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime">
+                <label for="dateTime">Date and Time</label>
+                <input type="datetime-local" class="form-control" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime" placeholder="yyyy-MM-dd'T'HH:mm format, e.g. '2021-12-17T09:30'">
                 <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
             </div>
             <input type="hidden" th:field="*{tutor}" id="tutor" th:value="${consultation.tutor.id}">
