@@ -1,7 +1,9 @@
 package com.tutoring.portal.controller;
 
+import com.tutoring.portal.model.Comment;
 import com.tutoring.portal.model.Subject;
 import com.tutoring.portal.model.User;
+import com.tutoring.portal.service.CommentService;
 import com.tutoring.portal.service.SubjectService;
 import com.tutoring.portal.service.UserService;
 import com.tutoring.portal.util.UserAuthentication;
@@ -27,6 +29,9 @@ public class AdminController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private CommentService commentService;
 
     @Autowired
     private UserAuthentication userAuthentication;
@@ -261,11 +266,46 @@ public class AdminController {
         return "redirect:/admin/subjects";
     }
 
+    /**
+     * Deletes subject with provided ID and redirects user to subjects view.
+     * If subject with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id comment's ID
+     * @return redirect to subjects view or error-404 view if subject doesn't exist
+     */
     @GetMapping(value = "admin/subjects/delete/{id}")
-    public String deleteSubject(@PathVariable int id, Model model) {
+    public String deleteSubject(@PathVariable int id) {
+        Subject subject = subjectService.getSubjectById(id);
+        // return error-404 view if subject doesn't exist
+        if (subject == null) {
+            return "errors/error-404";
+        }
+
         subjectService.deleteSubject(id);
-        String message = "Successfully deleted subjects with ID: " + id;
+        String message = "Successfully deleted subject with ID: " + id;
         logger.info(message);
         return "redirect:/admin/subjects";
+    }
+
+    /**
+     * Deletes comment with provided ID and redirects user to tutor's comments view.
+     * If comment with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id comment's ID
+     * @return redirect to tutor's comments view or error-404 view if comment doesn't exist
+     */
+    @GetMapping(value = "admin/comments/delete/{id}")
+    public String deleteComment(@PathVariable int id) {
+        Comment comment = commentService.getCommentById(id);
+        // return error-404 view if comment doesn't exist
+        if (comment == null) {
+            return "errors/error-404";
+        }
+
+        int tutorId = comment.getTutor().getId();
+        commentService.deleteComment(id);
+        String message = "Successfully deleted comment with ID: " + id;
+        logger.info(message);
+        return "redirect:/tutors/" + tutorId + "/comments";
     }
 }

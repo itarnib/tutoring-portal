@@ -180,4 +180,18 @@ public class UserController {
         model.addAttribute("successMessage", "Successfully updated password");
         return "update-password";
     }
+
+    /**
+     * Deletes user's profile.
+     *
+     * @return redirect to logout
+     */
+    @GetMapping(value="/profile/delete")
+    public String deleteProfile() {
+        int userId = userAuthentication.getCurrentUser().getId();
+        userService.deleteUser(userId);
+        String message = "Successfully deleted user with ID: " + userId;
+        logger.info(message);
+        return "redirect:/logout";
+    }
 }
