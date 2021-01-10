@@ -19,6 +19,10 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+import static com.tutoring.portal.util.CommonConstants.COMMENTS_VIEW;
+import static com.tutoring.portal.util.CommonConstants.ERROR_403_VIEW;
+import static com.tutoring.portal.util.CommonConstants.ERROR_404_VIEW;
+
 @Controller
 public class TutorController {
 
@@ -33,6 +37,12 @@ public class TutorController {
 
     private static final Logger logger = LoggerFactory.getLogger(TutorController.class);
 
+    /**
+     * Returns view with all tutors.
+     *
+     * @param model a Model object used in the view
+     * @return tutors view
+     */
     @GetMapping(value = "tutors")
     public String getAllTutors(Model model) {
         logger.info("Searching for all users with tutor role in the database");
@@ -50,12 +60,13 @@ public class TutorController {
      */
     @GetMapping(value = "tutors/{id}/consultations")
     public String getTutorConsultations(@PathVariable int id,  Model model) {
-        logger.info("Searching for tutor wth ID: " + id);
+        String message = "Searching for tutor wth ID: " + id;
+        logger.info(message);
         User tutor = userService.getUserById(id);
 
         // return error-404 view if user with provided ID doesn't exist or is not a tutor
         if (tutor == null || !tutor.isTutor()) {
-            return "errors/error-404";
+            return ERROR_404_VIEW;
         }
 
         model.addAttribute("user", userAuthentication.getCurrentUser());
@@ -68,35 +79,61 @@ public class TutorController {
         return "consultations";
     }
 
+    /**
+     * Returns view with tutor's comments and form for new comments.
+     * If tutor with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id tutor's ID
+     * @param comment new comment
+     * @param model a Model object used in the view
+     * @return comments view or error-404 view, if tutor with provided ID doesn't exist
+     */
     @GetMapping(value = "tutors/{id}/comments")
     public String getTutorComments(@PathVariable int id, Comment comment, Model model) {
-        logger.info("Searching for tutor wth ID: " + id);
+        String message = "Searching for tutor wth ID: " + id;
+        logger.info(message);
         User tutor = userService.getUserById(id);
+        // check if tutor with provided ID exists
         if (tutor == null || !tutor.isTutor()) {
-            return "errors/error-404";
+            return ERROR_404_VIEW;
         }
         model.addAttribute("tutor", tutor);
         model.addAttribute("user", userAuthentication.getCurrentUser());
         model.addAttribute("comments", tutor.getReceivedComments());
-        return "comments";
+        return COMMENTS_VIEW;
     }
 
+    /**
+     * Validates provided comment, saves it and returns comments view with success or error messages.
+     * If tutor with provided ID doesn't exist, returns error-404 view.
+     * If tutor ID equals current user's ID, returns error-403 view.
+     *
+     * @param comment new comment
+     * @param result a BindingResult object that holds the result of the validation and binding
+     * @param model a Model object used in the view
+     * @return comments view or error view, if error occurred
+     */
     @PostMapping(value = "tutors/{id}/comments/add")
     public String addComment(@PathVariable int id, @Valid Comment comment, BindingResult result, Model model) {
         User tutor = userService.getUserById(id);
+        User currentUser = userAuthentication.getCurrentUser();
+        // check if tutor with provided ID exists
         if (tutor == null || !tutor.isTutor()) {
-            return "errors/error-404";
+            return ERROR_404_VIEW;
         }
-        if (tutor.getId() == userAuthentication.getCurrentUser().getId()) {
-            return "errors/error-403";
+        // check if user is trying to add comment about himself
+        if (tutor.getId() == currentUser.getId()) {
+            return ERROR_403_VIEW;
         }
+        // check if comment is invalid
         if (result.hasErrors()) {
             logger.error("Cannot save comment, wrong input");
             model.addAttribute("tutor", tutor);
+            model.addAttribute("user", currentUser);
             model.addAttribute("comments", tutor.getReceivedComments());
-            return "comments";
+            return COMMENTS_VIEW;
         }
-        comment.setStudent(userAuthentication.getCurrentUser());
+        comment.setStudent(currentUser);
         comment.setTutor(tutor);
         commentService.saveComment(comment);
         logger.info("Comment successfully saved");

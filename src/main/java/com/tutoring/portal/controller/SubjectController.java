@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.tutoring.portal.util.CommonConstants.SUBJECTS;
+import static com.tutoring.portal.util.CommonConstants.SUBJECTS_VIEW;
+
 @Controller
 public class SubjectController {
 
@@ -37,22 +40,42 @@ public class SubjectController {
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
+    /**
+     * Returns view with all subjects from the database.
+     *
+     * @param model a Model object used in the view
+     * @return subjects view
+     */
     @GetMapping(value = "subjects")
     public String getAllSubjects(Model model) {
         logger.info("Searching for all subjects in the database");
-        model.addAttribute("subjects", subjectService.getAllSubjects());
-        return "subjects";
+        model.addAttribute(SUBJECTS, subjectService.getAllSubjects());
+        return SUBJECTS_VIEW;
     }
 
+    /**
+     * Returns view with all tutors who teach subject with provided ID.
+     * If subject with provided ID doesn't exist, returns error-404 view.
+     *
+     * @param id subject's ID
+     * @param model a Model object used in the view
+     * @return tutors view or error-404 view, if subject doesn't exist
+     */
     @GetMapping(value = "subjects/{id}/tutors")
     public String getAllTutorsBySubject(@PathVariable int id,  Model model) {
         Subject subject = subjectService.getSubjectById(id);
+        // return error-404 view if subject with provided ID doesn't exist
         if (subject == null) {
             return "errors/error-404";
         }
-        logger.info("Searching for all tutors by subject: " + subject.getSubjectName());
+
+        String message = "Searching for all tutors by subject: " + subject.getSubjectName();
+        logger.info(message);
         model.addAttribute("tutors", userService.getAllUsersWithTutorRole().stream()
-                .filter(t -> t.getSubjects().contains(subject)).collect(Collectors.toList()));
+                // filter list items to contain only tutors who teach provided subject
+                .filter(t -> t.getSubjects().contains(subject))
+                .collect(Collectors.toList()));
+
         return "tutors";
     }
 
@@ -67,13 +90,13 @@ public class SubjectController {
     @GetMapping(value = "subjects/{id}/consultations")
     public String getAllConsultationsBySubject(@PathVariable int id, Model model) {
         Subject subject = subjectService.getSubjectById(id);
-
         // return error-404 view if subject with provided ID doesn't exist
         if (subject == null) {
             return "errors/error-404";
         }
 
-        logger.info("Searching for all future consultations by subject: " + subject.getSubjectName());
+        String message = "Searching for all future consultations by subject: " + subject.getSubjectName();
+        logger.info(message);
 
         model.addAttribute("consultations", consultationService.getAllConsultations().stream()
                 .filter(c -> c.getSubject().getId() == id)
@@ -86,35 +109,61 @@ public class SubjectController {
         return "consultations";
     }
 
+    /**
+     * Returns select-subjects view with selected user's subjects.
+     *
+     * @param model a Model object used in the view
+     * @return select-subjects view or error-403 view, if user is not a tutor
+     */
     @GetMapping(value = "my-subjects")
     public String mySubjects(Model model) {
         User user = userAuthentication.getCurrentUser();
+        // return error-403 view if user is not a tutor
         if (!user.isTutor()) {
             return "errors/error-403";
         }
-        model.addAttribute("subjects", subjectService.getAllSubjects());
+
+        model.addAttribute(SUBJECTS, subjectService.getAllSubjects());
         model.addAttribute("mySubjects", user.getSubjects());
         return "select-subjects";
     }
 
+    /**
+     * Updates user's subjects list to contain only subjects with provided IDs.
+     *
+     * @param subjectIds list withs subject IDs, optional
+     * @param model a Model object used in the view
+     * @return select-subjects view or error-403 view, if user is not a tutor
+     */
     @PostMapping(value = "my-subjects")
-    public String updateMySubjects(@RequestParam List<Integer> subjectIds, Model model) {
+    public String updateMySubjects(@RequestParam(required = false) List<Integer> subjectIds, Model model) {
         User user = userAuthentication.getCurrentUser();
+        // return error-403 view if user is not a tutor
         if (!user.isTutor()) {
             return "errors/error-403";
         }
+
+        // remove all subjects from user's subjects list
         user.getSubjects().clear();
-        for (Integer id : subjectIds) {
-            Subject subject = subjectService.getSubjectById(id);
-            if (subject != null) {
-                user.getSubjects().add(subject);
+
+        // add all selected subjects to user's subjects list
+        if (subjectIds != null) {
+            for (Integer id : subjectIds) {
+                Subject subject = subjectService.getSubjectById(id);
+                if (subject != null) {
+                    user.getSubjects().add(subject);
+                }
             }
         }
+
         userService.updateUser(user);
-        logger.info("Successfully updated subjects list for user with ID: " + user.getId());
+        String message = "Successfully updated subjects list for user with ID: " + user.getId();
+        logger.info(message);
+
         model.addAttribute("successMessage", "You have successfully updated your subjects");
-        model.addAttribute("subjects", subjectService.getAllSubjects());
+        model.addAttribute(SUBJECTS, subjectService.getAllSubjects());
         model.addAttribute("mySubjects", user.getSubjects());
+
         return "select-subjects";
     }
 }
