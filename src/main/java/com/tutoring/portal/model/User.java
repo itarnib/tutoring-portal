@@ -18,6 +18,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
+/**
+ * Class for USER table.
+ */
 @Entity
 @Table(name = "USER")
 public class User {
@@ -75,28 +78,218 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")
     private Set<Comment> createdComments;
 
-    public User() {
+    /**
+     * Getter for id.
+     * @return id
+     */
+    public int getId() {
+        return id;
     }
 
-    public User(int id, String name, String surname, String email, String password, int active, Set<Role> roles,
-                Set<Subject> subjects, Set<Consultation> createdConsultations,
-                Set<Consultation> registeredToConsultations, Set<Address> addresses, Set<Comment> receivedComments,
-                Set<Comment> createdComments) {
+    /**
+     * Setter for id.
+     * @param id new id
+     */
+    public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * Getter for name.
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter for name.
+     * @param name new name
+     */
+    public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Getter for surname.
+     * @return surname
+     */
+    public String getSurname() {
+        return surname;
+    }
+
+    /**
+     * Setter for surname.
+     * @param surname new surname
+     */
+    public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    /**
+     * Getter for email.
+     * @return email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Setter for email.
+     * @param email new email
+     */
+    public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Getter for password.
+     * @return password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Setter for password.
+     * @param password new password
+     */
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Getter for active.
+     * @return active
+     */
+    public int getActive() {
+        return active;
+    }
+
+    /**
+     * Setter for active.
+     * @param active new active
+     */
+    public void setActive(int active) {
         this.active = active;
+    }
+
+    /**
+     * Getter for roles.
+     * @return roles
+     */
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    /**
+     * Setter for roles.
+     * @param roles new roles
+     */
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    /**
+     * Getter for subjects.
+     * @return subjects
+     */
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    /**
+     * Setter for subjects.
+     * @param subjects new subjects
+     */
+    public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
+    }
+
+    /**
+     * Getter for createdConsultations.
+     * @return createdConsultations
+     */
+    public Set<Consultation> getCreatedConsultations() {
+        return createdConsultations;
+    }
+
+    /**
+     * Setter for createdConsultations.
+     * @param createdConsultations new createdConsultations
+     */
+    public void setCreatedConsultations(Set<Consultation> createdConsultations) {
         this.createdConsultations = createdConsultations;
+    }
+
+    /**
+     * Getter for registeredToConsultations.
+     * @return registeredToConsultations
+     */
+    public Set<Consultation> getRegisteredToConsultations() {
+        return registeredToConsultations;
+    }
+
+    /**
+     * Setter for registeredToConsultations.
+     * @param registeredToConsultations new registeredToConsultations
+     */
+    public void setRegisteredToConsultations(Set<Consultation> registeredToConsultations) {
         this.registeredToConsultations = registeredToConsultations;
+    }
+
+    /**
+     * Getter for addresses.
+     * @return addresses
+     */
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
+
+    /**
+     * Setter for address.
+     * @param addresses new address
+     */
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    /**
+     * Getter for receivedComments.
+     * @return receivedComments
+     */
+    public Set<Comment> getReceivedComments() {
+        return receivedComments;
+    }
+
+    /**
+     * Setter for receivedComments.
+     * @param receivedComments new receivedComments
+     */
+    public void setReceivedComments(Set<Comment> receivedComments) {
         this.receivedComments = receivedComments;
+    }
+
+    /**
+     * Getter for createdComments.
+     * @return createdComments
+     */
+    public Set<Comment> getCreatedComments() {
+        return createdComments;
+    }
+
+    /**
+     * Setter for createdComments.
+     * @param createdComments new createdComments
+     */
+    public void setCreatedComments(Set<Comment> createdComments) {
         this.createdComments = createdComments;
     }
 
+    /**
+     * Checks if user has admin role.
+     * @return true or false
+     */
     public boolean isAdmin() {
         for (Role role : roles) {
             if (role.getRole().equals("ADMIN")) {
@@ -106,6 +299,10 @@ public class User {
         return false;
     }
 
+    /**
+     * Checks if user has tutor role.
+     * @return true or false
+     */
     public boolean isTutor() {
         for (Role role : roles) {
             if (role.getRole().equals("TUTOR")) {
@@ -113,109 +310,5 @@ public class User {
             }
         }
         return false;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getActive() {
-        return active;
-    }
-
-    public void setActive(int active) {
-        this.active = active;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Set<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
-    public Set<Consultation> getCreatedConsultations() {
-        return createdConsultations;
-    }
-
-    public void setCreatedConsultations(Set<Consultation> createdConsultations) {
-        this.createdConsultations = createdConsultations;
-    }
-
-    public Set<Consultation> getRegisteredToConsultations() {
-        return registeredToConsultations;
-    }
-
-    public void setRegisteredToConsultations(Set<Consultation> registeredToConsultations) {
-        this.registeredToConsultations = registeredToConsultations;
-    }
-
-    public Set<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(Set<Address> addresses) {
-        this.addresses = addresses;
-    }
-
-    public Set<Comment> getReceivedComments() {
-        return receivedComments;
-    }
-
-    public void setReceivedComments(Set<Comment> receivedComments) {
-        this.receivedComments = receivedComments;
-    }
-
-    public Set<Comment> getCreatedComments() {
-        return createdComments;
-    }
-
-    public void setCreatedComments(Set<Comment> createdComments) {
-        this.createdComments = createdComments;
     }
 }

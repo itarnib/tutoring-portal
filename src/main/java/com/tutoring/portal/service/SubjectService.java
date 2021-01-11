@@ -20,27 +20,41 @@ public class SubjectService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Returns list with all subjects from the database.
+     * @return subjects list
+     */
     public List<Subject> getAllSubjects() {
-        List<Subject> subjects = new ArrayList<>();
-        subjectRepository.findAll().forEach(subjects::add);
-        return subjects;
+        return new ArrayList<>(subjectRepository.findAll());
     }
 
+    /**
+     * Returns subject with provided ID or null, if subject wasn't found.
+     * @param id subject's ID
+     * @return subject with provided ID
+     */
     public Subject getSubjectById(int id) {
         Optional<Subject> subject = subjectRepository.findById(id);
-        if(subject.isPresent()) {
-            return subject.get();
-        }
-        return null;
+        return subject.orElse(null);
     }
 
+    /**
+     * Saves provided subject and returns it.
+     * @param subject subject
+     * @return saved subject
+     */
     public Subject saveSubject(Subject subject) {
         return subjectRepository.save(subject);
     }
 
-    public int deleteSubject(int id) {
+    /**
+     * Deletes subject with provided ID.
+     * @param id subject's ID
+     */
+    public void deleteSubject(int id) {
         Subject subject = getSubjectById(id);
         List<User> users = userRepository.findAll();
+        // delete subject's relationships
         for (User user : users) {
             if (user.getSubjects().contains(subject)) {
                 user.getSubjects().remove(subject);
@@ -48,6 +62,5 @@ public class SubjectService {
             }
         }
         subjectRepository.deleteById(id);
-        return id;
     }
 }

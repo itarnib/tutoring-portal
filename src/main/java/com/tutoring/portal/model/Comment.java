@@ -14,6 +14,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
+/**
+ * Class for COMMENT table.
+ */
 @Entity
 @Table(name = "COMMENT")
 public class Comment {
@@ -40,53 +43,82 @@ public class Comment {
     @JoinColumn(name="STUDENT_ID", nullable=false)
     private User student;
 
-    public Comment() {
-    }
-
-    public Comment(int id, LocalDateTime timestamp, String feedback, User tutor, User student) {
-        this.id = id;
-        this.timestamp = timestamp;
-        this.feedback = feedback;
-        this.tutor = tutor;
-        this.student = student;
-    }
-
+    /**
+     * Getter for id.
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Setter for id.
+     * @param id new id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Getter for timestamp.
+     * @return timestamp
+     */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Setter for timestamp.
+     * @param timestamp new timestamp
+     */
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Getter for feedback.
+     * @return feedback
+     */
     public String getFeedback() {
         return feedback;
     }
 
+    /**
+     * Setter for feedback.
+     * @param feedback new feedback
+     */
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
 
+    /**
+     * Getter for tutor.
+     * @return tutor
+     */
     public User getTutor() {
         return tutor;
     }
 
+    /**
+     * Setter for tutor.
+     * @param tutor new tutor
+     */
     public void setTutor(User tutor) {
         this.tutor = tutor;
     }
 
+    /**
+     * Getter for student.
+     * @return student
+     */
     public User getStudent() {
         return student;
     }
 
+    /**
+     * Setter for student.
+     * @param student new student
+     */
     public void setStudent(User student) {
         this.student = student;
     }

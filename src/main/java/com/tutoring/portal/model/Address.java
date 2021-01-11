@@ -14,6 +14,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
+/**
+ * Class for ADDRESS table.
+ */
 @Entity
 @Table(name = "ADDRESS")
 public class Address {
@@ -46,71 +49,114 @@ public class Address {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "address")
     private Set<Consultation> consultations;
 
-    public Address() {
-    }
-
-    public Address(int id, String country, String city, String street, String streetNumber, User user, Set<Consultation> consultations) {
-        this.id = id;
-        this.country = country;
-        this.city = city;
-        this.street = street;
-        this.streetNumber = streetNumber;
-        this.user = user;
-        this.consultations = consultations;
-    }
-
+    /**
+     * Getter for id.
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Setter for id.
+     * @param id new id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Getter for country.
+     * @return country
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Setter for country.
+     * @param country new country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Getter for city.
+     * @return city
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Setter for city.
+     * @param city new city
+     */
     public void setCity(String city) {
         this.city = city;
     }
 
+    /**
+     * Getter for street.
+     * @return street
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Setter for street.
+     * @param street new street
+     */
     public void setStreet(String street) {
         this.street = street;
     }
 
+    /**
+     * Getter for streetNumber.
+     * @return streetNumber
+     */
     public String getStreetNumber() {
         return streetNumber;
     }
 
+    /**
+     * Setter for streetNumber.
+     * @param streetNumber new streetNumber
+     */
     public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
     }
 
+    /**
+     * Getter for user.
+     * @return user
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Setter for user.
+     * @param user new user
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Getter for consultations.
+     * @return consultations
+     */
     public Set<Consultation> getConsultations() {
         return consultations;
     }
 
+    /**
+     * Setter for consultations.
+     * @param consultations new consultations
+     */
     public void setConsultations(Set<Consultation> consultations) {
         this.consultations = consultations;
     }

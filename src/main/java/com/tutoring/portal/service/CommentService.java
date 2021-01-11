@@ -16,27 +16,39 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    /**
+     * Returns list with all comments from the database.
+     * @return comments list
+     */
     public List<Comment> getAllComments() {
-        List<Comment> comments = new ArrayList<>();
-        commentRepository.findAll().forEach(comments::add);
-        return comments;
+        return new ArrayList<>(commentRepository.findAll());
     }
 
+    /**
+     * Returns comment with provided ID or null, if comment wasn't found.
+     * @param id comment's ID
+     * @return comment with provided ID
+     */
     public Comment getCommentById(int id) {
         Optional<Comment> comment = commentRepository.findById(id);
-        if(comment.isPresent()) {
-            return comment.get();
-        }
-        return null;
+        return comment.orElse(null);
     }
 
+    /**
+     * Saves provided comment and returns it.
+     * @param comment comment
+     * @return saved comment
+     */
     public Comment saveComment(Comment comment) {
         comment.setTimestamp(LocalDateTime.now());
         return commentRepository.save(comment);
     }
 
-    public int deleteComment(int id) {
+    /**
+     * Deletes comment with provided ID.
+     * @param id comment's ID
+     */
+    public void deleteComment(int id) {
         commentRepository.deleteById(id);
-        return id;
     }
 }

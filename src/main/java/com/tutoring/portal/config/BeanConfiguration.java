@@ -11,18 +11,30 @@ import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 @Configuration
 public class BeanConfiguration implements WebMvcConfigurer {
 
+    /**
+     * BCryptPasswordEncoder bean used for password encoding.
+     * @return BCryptPasswordEncoder
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * ServletRegistrationBean for H2 database.
+     * @return ServletRegistrationBean
+     */
     @Bean
-    ServletRegistrationBean h2servletRegistration() {
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
+    ServletRegistrationBean<WebServlet> h2servletRegistration(){
+        ServletRegistrationBean<WebServlet> registrationBean = new ServletRegistrationBean<>( new WebServlet());
         registrationBean.addUrlMappings("/console/*");
         return registrationBean;
     }
 
+    /**
+     * SpringSecurityDialect bean used in Thymeleaf views.
+     * @return SpringSecurityDialect
+     */
     @Bean
     public SpringSecurityDialect springSecurityDialect(){
         return new SpringSecurityDialect();

@@ -70,7 +70,7 @@ public class AdminController {
      */
     @GetMapping(value = "admin/users/register")
     public String registerUser(User user) {
-        return "register-user";
+        return "admin/register-user";
     }
 
     /**
@@ -93,7 +93,7 @@ public class AdminController {
         // check if provided user is invalid
         if (result.hasErrors()) {
             logger.error("Cannot save user, wrong input");
-            return "register-user";
+            return "admin/register-user";
         }
 
         userService.saveUser(user);

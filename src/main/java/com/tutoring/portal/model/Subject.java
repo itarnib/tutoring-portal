@@ -14,6 +14,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
+/**
+ * Class for SUBJECT table.
+ */
 @Entity
 @Table(name = "SUBJECT")
 public class Subject {
@@ -31,35 +34,50 @@ public class Subject {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="subject")
     private Set<Consultation> consultations;
 
-    public Subject() {
-    }
-
-    public Subject(int id, String subjectName, Set<Consultation> consultations) {
-        this.id = id;
-        this.subjectName = subjectName;
-        this.consultations = consultations;
-    }
-
+    /**
+     * Getter for id.
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Setter for id.
+     * @param id new id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Getter for subjectName.
+     * @return subjectName
+     */
     public String getSubjectName() {
         return subjectName;
     }
 
+    /**
+     * Setter for subjectName
+     * @param subjectName new subjectName
+     */
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
 
+    /**
+     * Getter for consultations.
+     * @return consultations
+     */
     public Set<Consultation> getConsultations() {
         return consultations;
     }
 
+    /**
+     * Setter for consultations.
+     * @param consultations new consultations
+     */
     public void setConsultations(Set<Consultation> consultations) {
         this.consultations = consultations;
     }
