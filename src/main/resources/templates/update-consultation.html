@@ -1,39 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <form th:action="@{/consultations/update/{id}(id=${consultation.id})}" th:object="${consultation}" method="post">
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <select class="form-control" th:field="*{subject}" id="subject">
-                    <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.subjectName}" th:selected="${consultation.subject.id == subject.id}"></option>
-                </select>
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <select class="form-control" th:field="*{address}" id="address">
-                    <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}" th:selected="${consultation.address.id == address.id}"></option>
-                </select>
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <input type="text" class="form-control" th:field="*{description}" id="description" th:value="${consultation.description}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
-            </div>
-            <div class="form-group">
-                <label for="maxStudentsNumber">Maximum number of students</label>
-                <input type="number" class="form-control" min="1" th:field="*{maxStudentsNumber}" id="maxStudentsNumber" th:value="${consultation.maxStudentsNumber}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('maxStudentsNumber')}" th:errors="*{maxStudentsNumber}"></div>
-            </div>
-            <div class="form-group">
-                <label for="dateTime">Date and Time</label>
-                <input type="datetime-local" class="form-control" placeholder="yyyy-MM-dd'T'HH:mm format, e.g. '2021-12-17T09:30'" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime" th:value="${#temporals.format(consultation.dateTime, 'yyyy-MM-dd') + 'T' + #temporals.format(consultation.dateTime, 'HH:mm')}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
-            </div>
-            <input type="hidden" th:field="*{tutor}" id="tutor" th:value="${consultation.tutor.id}">
-            <input type="submit" class="btn btn-primary" value="Update">
-        </form>
-    </div>
+<head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <form th:action="@{/consultations/update/{id}(id=${consultation.id})}" th:object="${consultation}" method="post">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select class="form-control" th:field="*{subject}" id="subject">
+                        <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.subjectName}" th:selected="${consultation.subject.id == subject.id}"></option>
+                    </select>
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <select class="form-control" th:field="*{address}" id="address">
+                        <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}" th:selected="${consultation.address.id == address.id}"></option>
+                    </select>
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" th:field="*{description}" id="description" th:value="${consultation.description}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="maxStudentsNumber">Maximum number of students</label>
+                    <input type="number" class="form-control" min="1" th:field="*{maxStudentsNumber}" id="maxStudentsNumber" th:value="${consultation.maxStudentsNumber}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('maxStudentsNumber')}" th:errors="*{maxStudentsNumber}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="dateTime">Date and Time</label>
+                    <input type="datetime-local" class="form-control" placeholder="yyyy-MM-dd'T'HH:mm format, e.g. '2021-12-17T09:30'" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd') + 'T' + #dates.format(#dates.createNow(), 'HH:mm')}" th:field="*{dateTime}" id="dateTime" th:value="${#temporals.format(consultation.dateTime, 'yyyy-MM-dd') + 'T' + #temporals.format(consultation.dateTime, 'HH:mm')}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}"></div>
+                </div>
+                <input type="hidden" th:field="*{tutor}" id="tutor" th:value="${consultation.tutor.id}">
+                <input type="submit" class="btn btn-primary" value="Update">
+            </form>
+        </div>
+    </body>
 </html>

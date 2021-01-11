@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h2>My Profile</h2>
-        <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
-        <form th:action="@{/profile/update}" th:object="${user}" method="post">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" th:field="*{name}" id="name" value="${user.name}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-            </div>
-            <div class="form-group">
-                <label for="name">Surname</label>
-                <input type="text" class="form-control" th:field="*{surname}" id="surname" value="${user.surname}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" class="form-control" th:field="*{email}" id="email" value="${user.email}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-            </div>
-            <input type="hidden" th:field="*{password}" id="password" value="temp">
-            <input type="submit" class="btn btn-primary" value="Update">
-        </form>
-    </div>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h2>My Profile</h2>
+            <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <form th:action="@{/profile/update}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" th:field="*{name}" id="name" value="${user.name}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="name">Surname</label>
+                    <input type="text" class="form-control" th:field="*{surname}" id="surname" value="${user.surname}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" th:field="*{email}" id="email" value="${user.email}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <input type="hidden" th:field="*{password}" id="password" value="temp">
+                <input type="submit" class="btn btn-primary" value="Update">
+            </form>
+        </div>
+    </body>
 </html>

@@ -1,42 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h2 th:if="${users.empty}">No users yet!</h2>
-        <div th:if="${!users.empty}">
-            <h2>Users</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Email</th>
-                    <th>Admin Role</th>
-                    <th>Tutor Role</th>
-                    <th>Active</th>
-                    <th>Edit</th>
-                    <th>Password</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="user : ${users}">
-                    <td th:text="${user.name}"></td>
-                    <td th:text="${user.surname}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td th:if="${!user.isAdmin()}"><a class="btn btn-info" th:href="@{/admin/users/role/add/admin/{id}(id=${user.id})}" role="button">Add Admin role</a></td>
-                    <td th:if="${user.isAdmin()}"><a class="btn btn-info" th:href="@{/admin/users/role/remove/admin/{id}(id=${user.id})}" role="button">Remove Admin role</a></td>
-                    <td th:if="${!user.isTutor()}"><a class="btn btn-info" th:href="@{/admin/users/role/add/tutor/{id}(id=${user.id})}" role="button">Add Tutor role</a></td>
-                    <td th:if="${user.isTutor()}"><a class="btn btn-info" th:href="@{/admin/users/role/remove/tutor/{id}(id=${user.id})}" role="button">Remove Tutor role</a></td>
-                    <td th:if="${user.active == 1}"><a class="btn btn-info" th:href="@{/admin/users/block/{id}(id=${user.id})}" role="button">Block</a></td>
-                    <td th:if="${user.active == 0}"><a class="btn btn-info" th:href="@{/admin/users/unblock/{id}(id=${user.id})}" role="button">Unblock</a></td>
-                    <td><a class="btn btn-info" th:href="@{/admin/users/update/{id}(id=${user.id})}" role="button">Edit</a></td>
-                    <td><a class="btn btn-info" th:href="@{/admin/users/update-password/{id}(id=${user.id})}" role="button">Change password</a></td>
-                    <td><a class="btn btn-danger" th:href="@{/admin/users/delete/{id}(id=${user.id})}" role="button">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h2 th:if="${users.empty}">No users yet!</h2>
+            <div th:if="${!users.empty}">
+                <h2>Users</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Email</th>
+                        <th>Admin Role</th>
+                        <th>Tutor Role</th>
+                        <th>Active</th>
+                        <th>Edit</th>
+                        <th>Password</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.surname}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:if="${!user.isAdmin()}">
+                            <a class="btn btn-info" th:href="@{/admin/users/role/add/admin/{id}(id=${user.id})}" role="button">Add Admin role</a>
+                        </td>
+                        <td th:if="${user.isAdmin()}">
+                            <a class="btn btn-info" th:href="@{/admin/users/role/remove/admin/{id}(id=${user.id})}" role="button">Remove Admin role</a>
+                        </td>
+                        <td th:if="${!user.isTutor()}">
+                            <a class="btn btn-info" th:href="@{/admin/users/role/add/tutor/{id}(id=${user.id})}" role="button">Add Tutor role</a>
+                        </td>
+                        <td th:if="${user.isTutor()}">
+                            <a class="btn btn-info" th:href="@{/admin/users/role/remove/tutor/{id}(id=${user.id})}" role="button">Remove Tutor role</a>
+                        </td>
+                        <td th:if="${user.active == 1}">
+                            <a class="btn btn-info" th:href="@{/admin/users/block/{id}(id=${user.id})}" role="button">Block</a>
+                        </td>
+                        <td th:if="${user.active == 0}">
+                            <a class="btn btn-info" th:href="@{/admin/users/unblock/{id}(id=${user.id})}" role="button">Unblock</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-info" th:href="@{/admin/users/update/{id}(id=${user.id})}" role="button">Edit</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-info" th:href="@{/admin/users/update-password/{id}(id=${user.id})}" role="button">Change password</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" th:href="@{/admin/users/delete/{id}(id=${user.id})}" role="button">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a class="btn btn-primary btn-lg active" href="/admin/users/register">Add a new user</a>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/admin/users/register">Add a new user</a>
-    </div>
+    </body>
 </html>

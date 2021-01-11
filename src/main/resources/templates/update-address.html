@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <form th:action="@{/addresses/update/{id}(id=${address.id})}" th:object="${address}" method="post">
-            <div class="form-group">
-                <label for="country">Country</label>
-                <input type="text" class="form-control" th:field="*{country}" id="country" value="${address.country}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
-            </div>
-            <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" class="form-control" th:field="*{city}" id="city" value="${address.city}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
-            </div>
-            <div class="form-group">
-                <label for="street">Street</label>
-                <input type="text" class="form-control" th:field="*{street}" id="street" value="${address.street}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
-            </div>
-            <div class="form-group">
-                <label for="streetNumber">Street Number</label>
-                <input type="text" class="form-control" th:field="*{streetNumber}" id="streetNumber" value="${address.streetNumber}">
-                <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('streetNumber')}" th:errors="*{streetNumber}"></div>
-            </div>
-            <input type="hidden" th:field="*{user}" id="user" th:value="${address.user.id}">
-            <input type="hidden" th:field="*{consultations}" id="consultations" th:value="${address.consultations}">
-            <input type="hidden" th:field="*{id}" id="id" th:value="${address.id}">
-            <input type="submit" class="btn btn-primary" value="Update">
-        </form>
-    </div>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <form th:action="@{/addresses/update/{id}(id=${address.id})}" th:object="${address}" method="post">
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" class="form-control" th:field="*{country}" id="country" value="${address.country}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" th:field="*{city}" id="city" value="${address.city}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="street">Street</label>
+                    <input type="text" class="form-control" th:field="*{street}" id="street" value="${address.street}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="streetNumber">Street Number</label>
+                    <input type="text" class="form-control" th:field="*{streetNumber}" id="streetNumber" value="${address.streetNumber}">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('streetNumber')}" th:errors="*{streetNumber}"></div>
+                </div>
+                <input type="hidden" th:field="*{user}" id="user" th:value="${address.user.id}">
+                <input type="hidden" th:field="*{consultations}" id="consultations" th:value="${address.consultations}">
+                <input type="hidden" th:field="*{id}" id="id" th:value="${address.id}">
+                <input type="submit" class="btn btn-primary" value="Update">
+            </form>
+        </div>
+    </body>
 </html>

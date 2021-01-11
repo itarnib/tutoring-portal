@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h1>My Comments</h1><br>
-        <h2 th:if="${user.isTutor() and receivedComments.empty}">You have not received any comments yet!</h2>
-        <div th:if="${user.isTutor() and !receivedComments.empty}">
-            <h2>Received Comments</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Created/Updated</th>
-                    <th>Student</th>
-                    <th>Feedback</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="comment : ${receivedComments}">
-                    <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${comment.student.name + ' ' + comment.student.surname}"></td>
-                    <td th:text="${comment.feedback}"></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h1>My Comments</h1><br>
+            <h2 th:if="${user.isTutor() and receivedComments.empty}">You have not received any comments yet!</h2>
+            <div th:if="${user.isTutor() and !receivedComments.empty}">
+                <h2>Received Comments</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Created/Updated</th>
+                        <th>Student</th>
+                        <th>Feedback</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="comment : ${receivedComments}">
+                        <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${comment.student.name + ' ' + comment.student.surname}"></td>
+                        <td th:text="${comment.feedback}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2 th:if="${createdComments.empty}">You have not created any comments yet!</h2>
+            <div th:if="${!createdComments.empty}">
+                <h2>Created Comments</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Created/Updated</th>
+                        <th>Tutor</th>
+                        <th>Feedback</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="comment : ${createdComments}">
+                        <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${comment.tutor.name + ' ' + comment.tutor.surname}"></td>
+                        <td th:text="${comment.feedback}" style="white-space: pre;"></td>
+                        <td><a class="btn btn-info" th:href="@{/my-comments/update/{id}(id=${comment.id})}" role="button">Edit</a></td>
+                        <td><a class="btn btn-danger" th:href="@{/my-comments/delete/{id}(id=${comment.id})}" role="button">Delete</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <h2 th:if="${createdComments.empty}">You have not created any comments yet!</h2>
-        <div th:if="${!createdComments.empty}">
-            <h2>Created Comments</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Created/Updated</th>
-                    <th>Tutor</th>
-                    <th>Feedback</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="comment : ${createdComments}">
-                    <td th:text="${#temporals.format(comment.timestamp, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${comment.tutor.name + ' ' + comment.tutor.surname}"></td>
-                    <td th:text="${comment.feedback}" style="white-space: pre;"></td>
-                    <td><a class="btn btn-info" th:href="@{/my-comments/update/{id}(id=${comment.id})}" role="button">Edit</a></td>
-                    <td><a class="btn btn-danger" th:href="@{/my-comments/delete/{id}(id=${comment.id})}" role="button">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    </body>
 </html>

@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h2 th:if="${subjects.empty}">No subjects yet!</h2>
-        <div th:if="${!subjects.empty}">
-            <h2>Subjects</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Subject</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="subject : ${subjects}">
-                    <td th:text="${subject.subjectName}"></td>
-                    <td><a class="btn btn-info" th:href="@{/admin/subjects/update/{id}(id=${subject.id})}" role="button">Edit</a></td>
-                    <td><a class="btn btn-danger" th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}" role="button">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h2 th:if="${subjects.empty}">No subjects yet!</h2>
+            <div th:if="${!subjects.empty}">
+                <h2>Subjects</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="subject : ${subjects}">
+                        <td th:text="${subject.subjectName}"></td>
+                        <td><a class="btn btn-info" th:href="@{/admin/subjects/update/{id}(id=${subject.id})}" role="button">Edit</a></td>
+                        <td><a class="btn btn-danger" th:href="@{/admin/subjects/delete/{id}(id=${subject.id})}" role="button">Delete</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a class="btn btn-primary btn-lg active" href="/admin/subjects/add">Add a new subject</a>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/admin/subjects/add">Add a new subject</a>
-    </div>
+    </body>
 </html>

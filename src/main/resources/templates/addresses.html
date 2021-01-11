@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
-        <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
-        <h2 th:if="${addresses.empty}">No addresses yet!</h2>
-        <div th:if="${!addresses.empty}">
-            <h2>My Addresses</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Full Address</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="address : ${addresses}">
-                    <td th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}"></td>
-                    <td><a class="btn btn-info" th:href="@{/addresses/update/{id}(id=${address.id})}" role="button">Edit</a></td>
-                    <td><a class="btn btn-danger" th:href="@{/addresses/delete/{id}(id=${address.id})}" role="button">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
+            <h2 th:if="${addresses.empty}">No addresses yet!</h2>
+            <div th:if="${!addresses.empty}">
+                <h2>My Addresses</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Full Address</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="address : ${addresses}">
+                        <td th:text="${address.street + ' ' + address.streetNumber + ', ' + address.city + ', ' + address.country}"></td>
+                        <td><a class="btn btn-info" th:href="@{/addresses/update/{id}(id=${address.id})}" role="button">Edit</a></td>
+                        <td><a class="btn btn-danger" th:href="@{/addresses/delete/{id}(id=${address.id})}" role="button">Delete</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a class="btn btn-primary btn-lg active" href="/addresses/add">Add a new address</a>
         </div>
-        <a class="btn btn-primary btn-lg active" href="/addresses/add">Add a new address</a>
-    </div>
+    </body>
 </html>

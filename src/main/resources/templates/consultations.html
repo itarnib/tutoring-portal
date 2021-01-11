@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h2 th:if="${consultations.empty}">No consultations yet!</h2>
-        <div th:if="${!consultations.empty}">
-            <h2 th:text="${title}"></h2>
-            <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
-            <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Date and Time</th>
-                    <th>Subject</th>
-                    <th>Description</th>
-                    <th>Available places</th>
-                    <th>Address</th>
-                    <th>Tutor</th>
-                    <th>View</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="consultation : ${consultations}">
-                    <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
-                    <td th:text="${consultation.subject.subjectName}"></td>
-                    <td th:text="${consultation.description}"></td>
-                    <td th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></td>
-                    <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
-                    <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
-                    <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
-                    <td><a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h2 th:if="${consultations.empty}">No consultations yet!</h2>
+            <div th:if="${!consultations.empty}">
+                <h2 th:text="${title}"></h2>
+                <div class="alert alert-success" role="alert" th:if="${successMessage}" th:text="${successMessage}"></div>
+                <div class="alert alert-warning" role="alert" th:if="${warningMessage}" th:text="${warningMessage}"></div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Date and Time</th>
+                        <th>Subject</th>
+                        <th>Description</th>
+                        <th>Available places</th>
+                        <th>Address</th>
+                        <th>Tutor</th>
+                        <th>View</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="consultation : ${consultations}">
+                        <td th:text="${#temporals.format(consultation.dateTime, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${consultation.subject.subjectName}"></td>
+                        <td th:text="${consultation.description}"></td>
+                        <td th:if="${consultation.students == null}" th:text="${consultation.maxStudentsNumber}"></td>
+                        <td th:if="${consultation.students != null}" th:text="${consultation.maxStudentsNumber - consultation.students.size()}"></td>
+                        <td th:text="${consultation.address.street + ' ' + consultation.address.streetNumber + ', ' + consultation.address.city + ', ' + consultation.address.country}"></td>
+                        <td th:text="${consultation.tutor.name + ' ' + consultation.tutor.surname}"></td>
+                        <td>
+                            <a class="btn btn-primary" th:href="@{/consultations/{id}(id=${consultation.id})}" role="button">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a th:if="${user != null and user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a>
         </div>
-        <a th:if="${user != null and user.isTutor()}" class="btn btn-primary btn-lg active" href="/consultations/add">Add a new consultation</a>
-    </div>
+    </body>
 </html>

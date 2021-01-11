@@ -4,25 +4,28 @@
     <body>
         <nav th:replace="fragments/navbar :: navbar"></nav>
         <div class="container">
-            <h2>Update User</h2>
-            <form th:action="@{/admin/users/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+            <form th:action="@{/admin/users/register}" th:object="${user}" method="post">
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" th:field="*{name}" id="name" value="${user.name}">
+                    <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Name">
                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                 </div>
                 <div class="form-group">
                     <label for="name">Surname</label>
-                    <input type="text" class="form-control" th:field="*{surname}" id="surname" value="${user.surname}">
+                    <input type="text" class="form-control" th:field="*{surname}" id="surname" placeholder="Surname">
                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="text" class="form-control" th:field="*{email}" id="email" value="${user.email}">
+                    <input type="text" class="form-control" th:field="*{email}" id="email" placeholder="Email">
                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
-                <input type="hidden" th:field="*{password}" id="password" value="temp">
-                <input type="submit" class="btn btn-primary" value="Update">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" th:field="*{password}" id="password" placeholder="Password">
+                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                <input type="submit" class="btn btn-primary" value="Register">
             </form>
         </div>
     </body>

@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-    <div th:replace="fragments/header :: header"></div>
-    <div class="container">
-        <h2 th:if="${tutors.empty}">No tutors yet!</h2>
-        <div th:if="${!tutors.empty}">
-            <h2>Tutors</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Subjects</th>
-                    <th>Email</th>
-                    <th>Comments</th>
-                    <th>Consultations</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="tutor : ${tutors}">
-                    <td th:text="${tutor.name}"></td>
-                    <td th:text="${tutor.surname}"></td>
-                    <td><span th:each="subject, index : ${tutor.subjects}" th:text="!${index.last} ? ${subject.subjectName} + ', ': ${subject.subjectName}"></span></td>
-                    <td th:text="${tutor.email}"></td>
-                    <td><a class="btn btn-info" th:href="@{/tutors/{id}/comments(id=${tutor.id})}" role="button">View comments</a></td>
-                    <td><a class="btn btn-info" th:href="@{/tutors/{id}/consultations(id=${tutor.id})}" role="button">View consultations</a></td>
-                </tr>
-                </tbody>
-            </table>
+    <head th:replace="fragments/head :: head"></head>
+    <body>
+        <nav th:replace="fragments/navbar :: navbar"></nav>
+        <div class="container">
+            <h2 th:if="${tutors.empty}">No tutors yet!</h2>
+            <div th:if="${!tutors.empty}">
+                <h2>Tutors</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Subjects</th>
+                        <th>Email</th>
+                        <th>Comments</th>
+                        <th>Consultations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="tutor : ${tutors}">
+                        <td th:text="${tutor.name}"></td>
+                        <td th:text="${tutor.surname}"></td>
+                        <td><span th:each="subject, index : ${tutor.subjects}" th:text="!${index.last} ? ${subject.subjectName} + ', ': ${subject.subjectName}"></span></td>
+                        <td th:text="${tutor.email}"></td>
+                        <td><a class="btn btn-info" th:href="@{/tutors/{id}/comments(id=${tutor.id})}" role="button">View comments</a></td>
+                        <td><a class="btn btn-info" th:href="@{/tutors/{id}/consultations(id=${tutor.id})}" role="button">View consultations</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </body>
 </html>
