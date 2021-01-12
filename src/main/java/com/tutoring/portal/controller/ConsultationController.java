@@ -143,7 +143,8 @@ public class ConsultationController {
     /**
      * Returns view with the form for new consultation creation.
      *
-     * @param consultation new user
+     * @param consultation new consultation
+     * @param model model a Model object used in the view
      * @return add-consultation view
      */
     @GetMapping(value = "consultations/add")
@@ -222,9 +223,10 @@ public class ConsultationController {
             return CONSULTATION_VIEW;
         }
 
+        User tutor = userService.getUserById(consultation.getTutor().getId());
         model.addAttribute(CONSULTATION, consultation);
-        model.addAttribute(SUBJECTS, user.getSubjects());
-        model.addAttribute(ADDRESSES, user.getAddresses());
+        model.addAttribute(SUBJECTS, tutor.getSubjects());
+        model.addAttribute(ADDRESSES, tutor.getAddresses());
         return "update-consultation";
     }
 
@@ -274,8 +276,9 @@ public class ConsultationController {
         // check if consultation is valid
         if (result.hasErrors()) {
             logger.error("Cannot update consultation, wrong input");
-            model.addAttribute(ADDRESSES, user.getAddresses());
-            model.addAttribute(SUBJECTS, user.getSubjects());
+            User tutor = userService.getUserById(consultation.getTutor().getId());
+            model.addAttribute(ADDRESSES, tutor.getAddresses());
+            model.addAttribute(SUBJECTS, tutor.getSubjects());
             return "update-consultation";
         }
 

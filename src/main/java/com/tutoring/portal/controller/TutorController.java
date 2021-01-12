@@ -108,6 +108,7 @@ public class TutorController {
      * If tutor with provided ID doesn't exist, returns error-404 view.
      * If tutor ID equals current user's ID, returns error-403 view.
      *
+     * @param id tutor's ID
      * @param comment new comment
      * @param result a BindingResult object that holds the result of the validation and binding
      * @param model a Model object used in the view

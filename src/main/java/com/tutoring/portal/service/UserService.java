@@ -112,6 +112,7 @@ public class UserService {
     /**
      * Deletes user with provided ID.
      * @param id user's ID
+     * @return deleted user's ID
      */
     public int deleteUser(int id) {
         User user = getUserById(id);
