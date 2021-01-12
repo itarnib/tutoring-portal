@@ -81,6 +81,17 @@ class UserControllerTests {
     }
 
     /**
+     * Tests createNewUser method with email error (another user has same email).
+     */
+    @Test
+    void testCreateNewUserWithEmailError() {
+        User user = createUser();
+        user.setId(2);
+        when(userService.findUserByEmail(user.getEmail())).thenReturn(createUser());
+        assertEquals("registration", userController.createNewUser(user, result, model));
+    }
+
+    /**
      * Tests myComments method.
      */
     @Test
@@ -216,6 +227,18 @@ class UserControllerTests {
         User user = createUser();
         when(userAuthentication.getCurrentUser()).thenReturn(user);
         when(userService.findUserByEmail(user.getEmail())).thenReturn(user);
+        assertEquals("update-user", userController.saveUpdatedProfile(user, result, model));
+    }
+
+    /**
+     * Tests saveUpdatedProfile method with email error (another user has same email).
+     */
+    @Test
+    void testSaveUpdatedProfileEmailError() {
+        User user = createUser();
+        user.setId(2);
+        when(userAuthentication.getCurrentUser()).thenReturn(user);
+        when(userService.findUserByEmail(user.getEmail())).thenReturn(createUser());
         assertEquals("update-user", userController.saveUpdatedProfile(user, result, model));
     }
 

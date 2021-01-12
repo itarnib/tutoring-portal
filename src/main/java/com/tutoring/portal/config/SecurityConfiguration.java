@@ -13,6 +13,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
+/**
+ * Class for security configuration.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -29,6 +32,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${spring.queries.roles-query}")
     private String rolesQuery;
 
+    /**
+     * Configures authentication.
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
@@ -38,33 +44,39 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .passwordEncoder(bCryptPasswordEncoder);
     }
 
+    /**
+     * Configures web based security at a resource level, based on a selection match.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.
-                authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/registration").permitAll()
-                .antMatchers("/consultations/future").permitAll()
-                .antMatchers("/tutors").permitAll()
-                .antMatchers("/subjects").permitAll()
-                .antMatchers("/consultations/add").hasAuthority("TUTOR")
-                .antMatchers("/addresses/**").hasAuthority("TUTOR")
-                .antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
-                .authenticated().and().csrf().disable().formLogin()
-                .loginPage("/login").failureUrl("/login?error=true")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .and().logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/").and().exceptionHandling();
+        http
+            .authorizeRequests()
+            .antMatchers("/").permitAll()
+            .antMatchers("/login").permitAll()
+            .antMatchers("/registration").permitAll()
+            .antMatchers("/consultations/future").permitAll()
+            .antMatchers("/tutors").permitAll()
+            .antMatchers("/subjects").permitAll()
+            .antMatchers("/consultations/add").hasAuthority("TUTOR")
+            .antMatchers("/addresses/**").hasAuthority("TUTOR")
+            .antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
+            .authenticated().and().csrf().disable().formLogin()
+            .loginPage("/login").failureUrl("/login?error=true")
+            .defaultSuccessUrl("/")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .and().logout()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+            .logoutSuccessUrl("/").and().exceptionHandling();
     }
 
+    /**
+     * Configures settings that impact global security.
+     */
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/console/**");
+            .antMatchers("/resources/**", "/static/**", "/css/**", "/console/**");
     }
 }
